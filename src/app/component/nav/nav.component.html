@@ -1,0 +1,15 @@
+
+<mat-sidenav-container #containerNav class="container-nav" *ngIf="displayNav" >
+  <mat-sidenav  class="sidenav" mode="side" opened fixedTopGap="64">
+    <mat-nav-list class="list-mat">
+      <a routerLink="/" mat-list-item >
+        <p style="color:white; font-size: 13px;">Home</p>
+      </a>
+      <a routerLink="/alphavis" mat-list-item style="color:white">
+        <p style="color:white; font-size: 13px;">AlphaVis</p>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+</mat-sidenav-container >
+
+
