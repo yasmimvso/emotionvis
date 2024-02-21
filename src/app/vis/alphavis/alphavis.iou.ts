@@ -13,10 +13,9 @@ interface Data {
 };
 
 export function iou(Datars: Data[], Datagt: Data[]){
+  
   let frame_atual = 0;
   const new_Data_Union: Data[] = [];
-  const dataPlot: Data[] = [];
-
   const frame_max = Datars[Datars.length - 1].frame_id;
 
   while (frame_atual <= frame_max) {

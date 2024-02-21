@@ -55,9 +55,6 @@ export class AlphavisComponent {
 
   i: number = 0;
 
-  chartContainer: any = d3.select("#chart-container");
-
-
   imagemUrl: any = 'https://oraculo.cin.ufpe.br/api/alphaction/frames0';
 
   dadosRs: Data[] = [];
@@ -109,30 +106,41 @@ export class AlphavisComponent {
       this.plotCircle();
       this.plotChartLine(this.dadosRs);
   }
+
+  novaLargura(): number {
+    return 646;
+  }
+
+  novaAltura(): number {
+
+    const novaLargura = this.novaLargura();
+    const larguraOriginal = 480;
+    const alturaOriginal = 270;
+    return (novaLargura / larguraOriginal) * alturaOriginal;
+  }
   ngOnInit(): void{
 
-    this.uploadRs.getDataRs().subscribe((dados) => {
-      this.dadosRs = dados;
+    this.atualizarImagem();
+    this.uploadRs.getDataRs().subscribe((dadosRs) => {
+      this.dadosRs = dadosRs;
 
       if(this.dadosRs) {
         this.filter.length = 0;
 
         let valoresDistintos = [...new Set(this.dadosRs.map((item:any) => CATEGORIES[item.class]))];
         this.filter.push({label: 'all', selected: false});
-        let res;
+
         valoresDistintos.forEach((d)=>{
-          res = {label: d, selected: false}
+          let res = {label: d, selected: false}
           this.filter.push(res);
         })
 
       }
-
-      this.atualizarImagem();
       this.callIou();
     });
 
-    this.uploadGt.getDataGt().subscribe((dados2) => {
-      this.dadosGt = dados2;
+    this.uploadGt.getDataGt().subscribe((dadosGt) => {
+      this.dadosGt = dadosGt;
       this.callIou();
     })
   }
@@ -145,7 +153,7 @@ export class AlphavisComponent {
   }
 
   callIou(): void {
-
+    console.log("ENTREI EM CALL IOU");
 
      let iouRst: Data[];
     if (this.dadosRs && this.dadosGt) {
@@ -390,20 +398,22 @@ export class AlphavisComponent {
 
 plotChartLine(data: Data[]): void{
 
-  const margin = { top: 20, right: 40, bottom: 30, left: 50};
+  const margin = { top: 20, right: 15, bottom: 50, left: 30 };
   let widthY = this.chartLine.nativeElement.clientWidth;
   let heightY = this.chartLine.nativeElement.clientHeight;
 
-    let width = widthY / 1.5- margin.left - margin.right;
-    let height = heightY - margin.bottom - margin.top;
+
+    let width = widthY - margin.left - margin.right;
+    let height = heightY - margin.bottom;
 
   let svgY = d3.select("#plotLine");
 
   if (svgY.empty()) {
 
     svgY
-      .attr("width", widthY )
-      .attr("height", heightY)
+      .append('svg')
+      .attr("width", widthY)
+      .attr("height",  heightY)
       .attr("class", "graph-svg-component")
       .append("g")
       .attr("transform", `translate(+ ${margin.left} +, + ${margin.top} +)`);
@@ -455,18 +465,19 @@ plotChartLine(data: Data[]): void{
     finalData.push(content);
   });
 
-      var x = d3.scaleTime()
-        .domain(d3.extent(finalData, (d:any) => d.frame) as [number, number]).range([0, width]);
+      var x = d3.scaleLinear()
+        .domain([d3.min(finalData, (d:any) => d.frame), d3.max(finalData, (d:any)=>d.frame)])
+        .range([0, width]);
 
       var y = d3.scaleLinear()
-        .domain([0, d3.max(finalData, (d:any) => d.qtd) as number])
-        .range([height, 0])
-        .nice();
+        .domain([0, d3.max(finalData, (d:any) => d.qtd + 0.5)])
+        .nice()
+        .range([height + 1, 0]);
 
       var line = d3
         .line<{ frame: number; qtd: number }>()
         .x((d:any) => x(d.frame))
-        .y((d:any) => y(d.qtd))
+        .y((d:any) =>y(d.qtd))
         .curve(d3.curveMonotoneX);
 
       svgY
@@ -479,24 +490,21 @@ plotChartLine(data: Data[]): void{
         .attr("stroke-width", 2)
         .attr("d", line);
 
-        finalData.forEach(function (point) {
-              svgY.append("circle")
-                  .attr("fill", "#3498db")
-                  .attr("r", 0.5)
-                  .attr("cx", x(point.frame))
-                  .attr("cy", y(point.qtd))
-                  .append("title")
-                  .text("Frame: " + point.frame);
 
-      });
+        svgY.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x));
 
-      svgY.append("g")
-      .attr("transform", `translate(${width}, 0)`)
-      .call(d3.axisRight(y));
+       svgY.append('g')
+        .attr('class', 'y-axis')
+        .attr("transform", `translate(${width}, 0)`)
+        .call(d3.axisRight(y));
 
-      svgY.append("text")
+
+      /*svgY.append("text")
         .attr("class", "label")
-        .attr("text-anchor", "end")
+        .attr("text-anchor", "start")
         .attr("x", width-40)
         .attr("y", height + 20)
         .text("Frames")
@@ -508,8 +516,9 @@ plotChartLine(data: Data[]): void{
         .attr("x", width/6 - 20)
         .attr("y", height/7)
         .attr("dy", ".75em")
-        .text("Erros por Frame");
+        .text("Erros por Frame");*/
 }
+
 
   togglePlay() {
 

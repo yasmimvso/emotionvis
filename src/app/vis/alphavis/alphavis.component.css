@@ -201,7 +201,7 @@ h3{
   opacity: 0.9;
 }
 
-#plotLine{
+.lineCard {
 padding-top: 0.5%;
 padding-left: 1%;
 width: 70%;

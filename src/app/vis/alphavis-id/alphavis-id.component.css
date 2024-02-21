@@ -226,8 +226,25 @@ label{
 .heatMap{
   width: 45%;
   height: 40%;
-  background-color:#c1bcbc;
 }
+
+.sunny_heat{
+   height: 100%;
+   width:10%;
+   /*background-color:rgba(225, 218, 218, 0.807);*/
+   text-align: center;
+}
+
+.sunny_heat:hover{
+    cursor: pointer;
+}
+
+.heatmap-container{
+  height: 90%;
+  width: 100%;
+  position: relative;
+}
+
 
 .chartLine{
   margin-top: 1%;

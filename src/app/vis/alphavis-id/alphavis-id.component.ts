@@ -7,9 +7,8 @@ import { CATEGORIES } from '../alphavis/alphavis.categories';
 
 
 import * as d3 from 'd3';
-import {Chart} from 'chart.js';
-//import * as h337 from 'heatmap.js';
-
+import * as h337 from 'heatmap.js';
+import { contourDensity } from "d3-contour";
 interface Data {
   frame_id: any;
   person_id: any;
@@ -32,6 +31,18 @@ interface Canva{
   color: string
 };
 
+interface DataPoint {
+  x: number;
+  y: number;
+  value: number;
+}
+
+interface HeatmapData {
+  max: number;
+  min: number;
+  data: DataPoint[];
+}
+
 @Component({
   selector: 'app-alphavis-id',
   templateUrl: './alphavis-id.component.html',
@@ -43,6 +54,7 @@ export class AlphavisIdComponent {
   @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
   @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
   @ViewChild('barCharts', {static: true}) private barCharts! : ElementRef;
+  @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
 
   context: any;
 
@@ -69,6 +81,11 @@ export class AlphavisIdComponent {
 
   paragrafos: any = [];
   filterSelect : any = [];
+  dadosHeatMap: any = [];
+
+  heatmapBackgroundColor : string = "white";
+  flagAlter: boolean = true;
+  heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
 
 constructor(private router: Router, private location: Location) {
     location.getState();
@@ -94,12 +111,19 @@ ngOnInit(): void {
   } else {
     sessionStorage.removeItem('reloadedRecently');
   }
+
 }
 
 load() {
   window.location.reload();
 }
 
+atualizarImagem() {
+  this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+  this.plotRec();
+  this.atualizaParagrafo();
+
+}
 
 ngAfterViewInit() {
 
@@ -128,9 +152,9 @@ ngAfterViewInit() {
 
    this.atualizaParagrafo();
    this.PlotdataSet();
-   //this.heatMap(this.state.dado);
    this.ChartLine();
    this.percInf();
+   this.heatMap();
 }
 
 
@@ -190,7 +214,7 @@ changeByFilter(event:any){
     resultado = [... new Set(resultado.map((item:any)=>item.label))];
   }
   this.filterSelect = resultado;
-  console.log("RESULTADO", resultado);
+  //console.log("RESULTADO", resultado);
   this.plotRec();
 
 }
@@ -393,25 +417,90 @@ plotRec(): void{
     }
 }
 
-/*heatMap(dataPoint:any):void{
+changeBackgroundColor() {
 
-  var config = {
-    container: document.getElementById('heatmap'),
-    radius: 10,
-    maxOpacity: .5,
-    minOpacity: 0,
-    blur: .75,
-    gradient: {
-      '.5': 'blue',
-      '.8': 'red',
-      '.95': 'white'
-    }
-  };
-  //var heatmapInstance = h337.create(config);
+  if(this.flagAlter){
+    this.heatmapBackgroundColor = this.heatmapColorAlter[0];
+    this.flagAlter = !this.flagAlter;
+  }
+  else{
+    this.heatmapBackgroundColor = this.heatmapColorAlter[1];
+    this.flagAlter = !this.flagAlter;
+  }
+}
 
- // heatmapInstance.addData(dataPoint);
+heatMap():void{
 
-}*/
+    var margin = {top: 10, right: 30, bottom: 30, left: 40},
+    width = this.heatmapInf.nativeElement.clientWidth - margin.left - margin.right,
+    height = this.heatmapInf.nativeElement.clientHeight - margin.top - margin.bottom;
+
+    var svg = d3.select("#heatmap")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+        const color = d3.scaleSequential(d3.interpolateBlues)
+        .domain([-0.1, 0.75]);
+
+          let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id);
+          dados.forEach((d:any)=>{
+
+            let result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2,this.heatmapInf.nativeElement.clientWidth, this.heatmapInf.nativeElement.clientHeight);
+            if(result){
+              let object = {x: result[0], y:result[1]};
+              this.dadosHeatMap.push(object);
+            }
+        });
+
+
+          console.log(this.dadosHeatMap);
+
+            var x = d3.scaleLinear()
+          .domain([0, 300]).nice()
+          .range([ margin.left, width - margin.right ]);
+
+          var y = d3.scaleLinear()
+          .domain([0, 300]).nice()
+          .range([ height - margin.bottom, margin.top ]);
+
+         /*const xScale = d3.scaleLinear().domain([-4, 10]).range([0, width]);
+          const yScale = d3.scaleLinear().domain([-14, 29]).range([0, height]);*/
+
+
+          var densityData = contourDensity()
+          .x((d:any) => x(d.x))
+          .y((d:any) => y(d.y))
+          .size([400, 320])
+          .bandwidth(20)
+          .thresholds(30)
+          (this.dadosHeatMap);
+
+
+
+          //var densityData = d3.contourDensity();
+          console.log("DENSITYDATA", densityData);
+
+          svg.selectAll("path")
+          .data(densityData)
+          .enter()
+          .append("path")
+          .attr("d", d3.geoPath())
+          .attr("fill", "none")
+          .attr("stroke", "#84c0e9");
+
+
+          svg.insert("g", "g")
+          .selectAll("path")
+          .data(densityData)
+          .enter()
+          .append("path")
+          .attr("d", d3.geoPath())
+          .attr("fill", function(d) { return color(d.value ); })
+}
 
 atualizaParagrafo():void{
   let rst = this.state.dados.filter((d:any)=>{
@@ -450,7 +539,6 @@ public ChartLine(){
 		data: [{
 			type: "rangeBar",
 			showInLegend: true,
-			//yValueFormatString: "$#0.#K",
 			legendText: "Frames(s)",
 			color: "white",
 			dataPoints: this.dataSet
@@ -459,16 +547,8 @@ public ChartLine(){
 
 }
 
-atualizarImagem() {
-  this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
-  this.plotRec();
-  this.atualizaParagrafo();
-
-}
 
   togglePlay() {
-
-    this.isPlaying = !this.isPlaying;
 
     if (!this.isPlaying) {
 
@@ -487,7 +567,7 @@ atualizarImagem() {
         }
       }, 500);
     }
-
+    this.isPlaying = !this.isPlaying;
   }
 
 }
