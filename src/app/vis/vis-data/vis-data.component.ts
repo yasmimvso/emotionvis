@@ -4,6 +4,10 @@ import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
 import { CATEGORIES  } from '../alphavis/alphavis.categories'
 import { iou } from '../alphavis/alphavis.iou'
+import {plotInfo} from './vis-data.infoPlot'
+
+import { forkJoin } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 interface Data {
   frame_id: number;
@@ -25,24 +29,33 @@ interface Data {
   styleUrls: ['./vis-data.component.css']
 })
 export class VisDataComponent implements OnInit{
+  @ViewChild('img', { static: true }) private img!: ElementRef;
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService) { }
+
 
   dadosRs: Data[] = []
   dadosGt: Data[] = []
   resultado: any
-  tecnologia : string = "AlphaVis"
+  tecnologia : string = "AlphAction"
   imagemUrl: string = `https://oraculo.cin.ufpe.br/api/alphaction/frames1`
 
-
+  resultIou: Data[] = []
   filter: any = [];
 
   ngOnInit(): void {
     this.loadInfo();
   }
 
+  callInfoByFrame(data:any, wdt:any, hgt:any, frame:any){
+     plotInfo(wdt, hgt, frame, data)
+  }
+
   changeImg(frame:any){
       this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${frame}`
+      // O dado é do IOU result
+      //callInfoByFrame(dados, altura, largura, frime)
+      this.callInfoByFrame(this.resultIou,this.img.nativeElement.clientWidth, this.img.nativeElement.clientHeight, frame)
   }
 
   calcErroByAction(result:any){
@@ -95,32 +108,25 @@ export class VisDataComponent implements OnInit{
 
     let qtdByAcion: any= []
     this.resultado = [... new Set(this.dadosRs.map((item)=>item.class))];
-
     this.resultado.forEach((action:any)=>{
-
       let qtd = this.dadosRs.filter((item:any) => item.class == action)
       qtdByAcion.push([ CATEGORIES[action], qtd.length]);
     })
-
     this.createChart( qtdByAcion);
   }
 
   loadInfo(){
-    let result : Data[]
-
-    this.uploadRs.getDataRs().subscribe((dadosRs) => {
-    this.dadosRs = dadosRs;
-    if(this.dadosRs) this.calcQtdByAction();
-
-   })
-
-   this.uploadGt.getDataGt().subscribe((dadosGt) => {
+    forkJoin([
+      this.uploadRs.getDataRs().pipe(shareReplay()),
+      this.uploadGt.getDataGt().pipe(shareReplay())
+    ]).subscribe(([dadosRs, dadosGt]) => {
+      this.dadosRs = dadosRs;
       this.dadosGt = dadosGt;
-      result = iou(this.dadosRs,this.dadosGt)
-      //console.log(result)
-      this.calcErroByAction(result)
-      this.errorByFrames(result)
-   })
+      this.calcQtdByAction();
+      this.resultIou = iou(this.dadosRs, this.dadosGt);
+      this.calcErroByAction(this.resultIou);
+      this.errorByFrames(this.resultIou);
+    });
 
   }
 
@@ -139,29 +145,29 @@ export class VisDataComponent implements OnInit{
   }
 
   errorByFrames(dados:any){
-  let errorByFrame : any = []
 
-  let result : any = []
-  result = dados.filter((item:any)=>{return item.valid == "false"})
+      let errorByFrame : any = [];
+      let result : any = [];
 
-  result.forEach((item: any) => {
+      result = dados.filter((item:any)=>{return item.valid == "false"})
 
-    if (errorByFrame[item.frame_id] === undefined) {
-        errorByFrame[item.frame_id] = 1;
-    }
-    else errorByFrame[item.frame_id] += 1;
-    console.log(errorByFrame[item.frame_id]);
-  })
+      result.forEach((item: any) => {
 
-let errorArray: [string, number][] = Object.entries(errorByFrame);
+        if (errorByFrame[item.frame_id] === undefined) {
+            errorByFrame[item.frame_id] = 1;
+        }
+        else errorByFrame[item.frame_id]++;
+      })
 
-errorArray = errorArray.filter(([frame_id, count]) => count > 2);
+      let errorArray: [string, number][] = Object.entries(errorByFrame);
 
-errorArray.sort((a, b) => (b[1] as number) - (a[1] as number));
+      errorArray = errorArray.filter(([frame_id, length]) => length > 1);
 
-errorArray.forEach(([frame_id, count]) => {
-    this.filter.push({'name': count, 'frame': frame_id})
-});
+      errorArray.sort((a, b) => (b[1] as number) - (a[1] as number));
+
+      errorArray.forEach(([frame_id, length]) => {
+          this.filter.push({'length': length, 'frame': frame_id})
+      });
 
 }
 

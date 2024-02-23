@@ -349,7 +349,7 @@ PlotdataSet(){
     })
 }
 
-calcSize(val1: any, val2: any){
+ calcSize(val1: any, val2: any){
   return Math.abs(val2 - val1);
 }
 
@@ -549,6 +549,10 @@ public ChartLine(){
 
 
   togglePlay() {
+
+    let widthImg = this.imgView.nativeElement.clientWidth;
+    let heightImg = this.imgView.nativeElement.clientHeight;
+
 
     if (!this.isPlaying) {
 

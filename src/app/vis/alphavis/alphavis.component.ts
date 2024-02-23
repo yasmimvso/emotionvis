@@ -107,17 +107,6 @@ export class AlphavisComponent {
       this.plotChartLine(this.dadosRs);
   }
 
-  novaLargura(): number {
-    return 646;
-  }
-
-  novaAltura(): number {
-
-    const novaLargura = this.novaLargura();
-    const larguraOriginal = 480;
-    const alturaOriginal = 270;
-    return (novaLargura / larguraOriginal) * alturaOriginal;
-  }
   ngOnInit(): void{
 
     this.atualizarImagem();
