@@ -25,6 +25,7 @@ import { AlphavisComponent } from './vis/alphavis/alphavis.component'
 import {AlphavisIdComponent} from './vis/alphavis-id/alphavis-id.component'
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { VisDataComponent } from './vis/vis-data/vis-data.component'
+import {ChartComponent} from './component/chart/chart.component'
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { VisDataComponent } from './vis/vis-data/vis-data.component'
     BodyvisComponent,
     AlphavisComponent,
     AlphavisIdComponent,
-    VisDataComponent 
+    VisDataComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
@@ -54,4 +56,4 @@ import { VisDataComponent } from './vis/vis-data/vis-data.component'
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

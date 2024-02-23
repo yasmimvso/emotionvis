@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@canvasjs/angular-charts": "^1.0.3",
+    "anychart": "^8.12.0",
     "canvasjs": "^1.8.3",
     "chart.js": "^4.4.1",
     "d3": "^7.8.5",

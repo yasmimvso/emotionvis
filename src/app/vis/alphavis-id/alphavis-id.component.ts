@@ -196,7 +196,7 @@ changeByFilter(event:any){
 
     }
 
-    let resultado = Array();
+  let resultado = Array();
 
   if(this.filter[0].selected){
     this.filter.filter((item:any)=>{
