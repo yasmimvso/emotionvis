@@ -161,8 +161,11 @@ h3{
   height: 100%;
   top:0;
   left: 0;
-  opacity: 1;
-  background-color: #ccc;
+
+  background-color: #67686b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .graph-svg-component {
@@ -185,8 +188,6 @@ h3{
   display: flex;
   align-items: center;
   justify-content:space-evenly;
-
-
 }
 
 

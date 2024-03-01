@@ -1,23 +1,25 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import 'anychart';
 import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
 import { CATEGORIES  } from '../alphavis/alphavis.categories'
 import { iou } from '../alphavis/alphavis.iou'
 import {plotInfo} from './vis-data.infoPlot'
+import {infoCard} from './vis-data.infoPlot'
 
 import { forkJoin } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 
+import 'anychart';
+
 interface Data {
   frame_id: number;
-  person_id: any;
+  person_id?: any;
   bb_x1: any;
   bb_y1: any;
   bb_x2: any;
   bb_y2: any;
   class: any;
-  valid?: string;
+  valid?: boolean;
   x?: any;
   y?: any;
 };
@@ -37,8 +39,11 @@ export class VisDataComponent implements OnInit{
   dadosRs: Data[] = []
   dadosGt: Data[] = []
   resultado: any
+  frame: any = 'Empty'
+
   tecnologia : string = "AlphAction"
   imagemUrl: string = `https://oraculo.cin.ufpe.br/api/alphaction/frames1`
+  infoCard: any = []
 
   resultIou: Data[] = []
   filter: any = [];
@@ -48,14 +53,16 @@ export class VisDataComponent implements OnInit{
   }
 
   callInfoByFrame(data:any, wdt:any, hgt:any, frame:any){
-     plotInfo(wdt, hgt, frame, data)
+     plotInfo(wdt, hgt, frame, data);
   }
 
   changeImg(frame:any){
       this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${frame}`
       // O dado é do IOU result
       //callInfoByFrame(dados, altura, largura, frime)
-      this.callInfoByFrame(this.resultIou,this.img.nativeElement.clientWidth, this.img.nativeElement.clientHeight, frame)
+      //this.frame = frame;
+      this.frame = infoCard(this.resultIou, frame)
+      this.callInfoByFrame(this.resultIou,this.img.nativeElement.clientWidth, this.img.nativeElement.clientHeight, frame);
   }
 
   calcErroByAction(result:any){
@@ -63,7 +70,7 @@ export class VisDataComponent implements OnInit{
     let qtdByAcion: any= []
     this.resultado.forEach((action:any)=>{
 
-      let qtd = result.filter((item:any) => item.valid == "false" && item.class == action)
+      let qtd = result.filter((item:any) => item.valid == false && item.class == action)
       qtdByAcion.push([ CATEGORIES[action], qtd.length]);
     })
 
@@ -121,8 +128,8 @@ export class VisDataComponent implements OnInit{
       this.uploadGt.getDataGt().pipe(shareReplay())
     ]).subscribe(([dadosRs, dadosGt]) => {
       this.dadosRs = dadosRs;
-      this.dadosGt = dadosGt;
       this.calcQtdByAction();
+      this.dadosGt = dadosGt;
       this.resultIou = iou(this.dadosRs, this.dadosGt);
       this.calcErroByAction(this.resultIou);
       this.errorByFrames(this.resultIou);
@@ -134,7 +141,7 @@ export class VisDataComponent implements OnInit{
     let chart = anychart.column(dados);
     chart.title('Quantidade de ações detectadas');
     chart.container('container-bar');
-    chart.draw();
+
   }
 
   creatPieChart(data:any){
@@ -149,7 +156,7 @@ export class VisDataComponent implements OnInit{
       let errorByFrame : any = [];
       let result : any = [];
 
-      result = dados.filter((item:any)=>{return item.valid == "false"})
+      result = dados.filter((item:any)=>{return item.valid == false})
 
       result.forEach((item: any) => {
 

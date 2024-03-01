@@ -7,7 +7,7 @@
   <div class="main">
     <app-nav style="height: 95vh; background-color: #3db5e7; "></app-nav>
     <div class="content-frame">
-      <div class="frames">
+      <mat-card class="frames">
         <div class="checkbox mat-elevation-z3">
           <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtro por ação</h3> <!--modularizar-->
                 <ng-container class="filters" *ngFor="let trd of filter">
@@ -44,7 +44,7 @@
               <input type="range" id="opacity" [(ngModel)]="opacityRange" min="0.30" max="0.50" step="0.01">
           </div>
         </div>
-      </div>
+      </mat-card>
       <div class="date" >
         <div  class="dataPlot  mat-elevation-z3" style=" border: 0.2rem solid #a7a7a7;" #dataPlot>
           <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Quantidade de ações</h3>

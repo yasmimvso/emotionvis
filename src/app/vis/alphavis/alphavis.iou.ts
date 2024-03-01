@@ -1,22 +1,22 @@
 
 interface Data {
   frame_id: number;
-  person_id: any;
+  person_id?: any;
   bb_x1: any;
   bb_y1: any;
   bb_x2: any;
   bb_y2: any;
   class: any;
-  valid?: string;
+  valid?: boolean;
   x?:any;
   y?: any;
 };
 
 export function iou(Datars: Data[], Datagt: Data[]){
-  
-  let frame_atual = 0;
+
+  let frame_atual : number= 0;
   const new_Data_Union: Data[] = [];
-  const frame_max = Datars[Datars.length - 1].frame_id;
+  const frame_max : number = Datars[Datars.length - 1].frame_id;
 
   while (frame_atual <= frame_max) {
 
@@ -36,37 +36,64 @@ export function iou(Datars: Data[], Datagt: Data[]){
 
     const Dgt = Datagt.filter((dados) => dados.frame_id == frame_atual);
 
+
     const Drs = Datars.filter((dados) => dados.frame_id == frame_atual);
 
     const iou_by_pred: number[] = [];
     let iou_result = 0;
 
-    // se Dgt.lenth < 0 e Drs.gt>0. Então Drs está com erros
-    // Se um dos dois não existir. Temos erros
+    if(Drs.length && Dgt.length){
 
-    // deveria reescrever sobre gt
+      for (let i = 0; i < Drs.length; i++) {
+        for (let g = 0; g < Dgt.length; g++) {
+          iou_result = intersection_of_union(Dgt[g], Drs[i]);
 
-    for (let i = 0; i < Drs.length; i++) {
-      for (let g = 0; g < Dgt.length; g++) {
-        iou_result = intersection_of_union(Dgt[g], Drs[i]);
-
-        if (iou_result >= 0.75) {
-          iou_by_pred.push(g);
+          if (iou_result >= 0.75) {
+            iou_by_pred.push(g);
+          }
         }
-      }
 
-      for (const index of iou_by_pred) {
-        if (Dgt[index].bb_y2-1 == Drs[i].class) {
-          Drs[i].valid = "true";
-          break;
-        } else {
-          Drs[i].valid = "false";
+        for (const index of iou_by_pred) {
+          if (Dgt[index].bb_y2-1 == Drs[i].class) {
+            Drs[i].valid = true;
+            break;
+          } else {
+            Drs[i].valid = false;
+          }
         }
-      }
 
-      iou_by_pred.length = 0;
-      new_Data_Union.push(Drs[i]);
+        iou_by_pred.length = 0;
+        new_Data_Union.push(Drs[i]);
+      }
     }
+    else if(Drs.length == 0 && Dgt.length!=0){
+     // console.log(`Tem em DGT no frame ${frame_atual} mas não tem em DRs`);
+
+      Dgt.forEach((d:any)=>{
+
+        let object ={
+          frame_id: d.frame_id,
+          bb_x1: d.person_id,
+          bb_y1: d.bb_x1,
+          bb_x2: d.bb_y1,
+          bb_y2: d.bb_x2,
+          class: parseInt(d.bb_y2) - 1, // grounding começa com 1 a análise das ações
+          valid: false,
+        }
+        console.log(object)
+        new_Data_Union.push(object);
+      })
+
+    }
+    else if(Drs.length != 0 && Dgt.length==0){
+      // foi identificado ações porém não deveria
+       for(let i=0; i<Drs.length; i++){
+         let result : any = Drs[i];
+         result.valid = false;
+         new_Data_Union.push(result);
+       }
+    }
+    // caso final é quando nenhum dos dois identificarama ações
 
     frame_atual++;
   }

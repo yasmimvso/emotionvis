@@ -11,13 +11,13 @@ import * as d3 from 'd3';
 
 interface Data {
   frame_id: number;
-  person_id: any;
+  person_id?: any;
   bb_x1: any;
   bb_y1: any;
   bb_x2: any;
   bb_y2: any;
   class: any;
-  valid?: string;
+  valid?: boolean;
   x?: any;
   y?: any;
 };
@@ -42,9 +42,9 @@ export class AlphavisComponent {
   heightLinePlot: number = 0;
   opacityRange: number = 0.46;
   sliderValue: number = 0;
-  minValue: number = 32;
+  minValue: number = 0;
   maxValue: number = 1800;
-  stepValue: number = 1;
+  stepValue: number = 5; // 5 é o melhor
   rock: number = 0;
 
   isPlaying: boolean = false;
@@ -53,19 +53,21 @@ export class AlphavisComponent {
   heightImg:any;
   intervalId: any;
 
-  i: number = 0;
 
   imagemUrl: any = 'https://oraculo.cin.ufpe.br/api/alphaction/frames0';
 
   dadosRs: Data[] = [];
   dadosGt: Data[] = [];
+  data: Data[] = [];
 
   router: Router;
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService,router: Router){ this.router = router;}
 
   atualizarImagem() {
+
     this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+
   }
 
   changeByFilter(event:any){
@@ -103,7 +105,7 @@ export class AlphavisComponent {
 
       }
 
-      this.plotCircle();
+      this.plotCircle(this.data);
       this.plotChartLine(this.dadosRs);
   }
 
@@ -112,20 +114,8 @@ export class AlphavisComponent {
     this.atualizarImagem();
     this.uploadRs.getDataRs().subscribe((dadosRs) => {
       this.dadosRs = dadosRs;
-
-      if(this.dadosRs) {
-        this.filter.length = 0;
-
-        let valoresDistintos = [...new Set(this.dadosRs.map((item:any) => CATEGORIES[item.class]))];
-        this.filter.push({label: 'all', selected: false});
-
-        valoresDistintos.forEach((d)=>{
-          let res = {label: d, selected: false}
-          this.filter.push(res);
-        })
-
-      }
       this.callIou();
+      this.selecItems();
     });
 
     this.uploadGt.getDataGt().subscribe((dadosGt) => {
@@ -141,44 +131,62 @@ export class AlphavisComponent {
 
   }
 
-  callIou(): void {
-    console.log("ENTREI EM CALL IOU");
+  selecItems(){
 
-     let iouRst: Data[];
+      if(this.data){
+
+         this.filter.length = 0;
+
+        let valoresDistintos = [...new Set(this.data.map((item:any) => CATEGORIES[item.class]))];
+        this.filter.push({label: 'all', selected: false});
+
+        console.log("AÇÕES SELECIONADAS: ", valoresDistintos);
+
+        valoresDistintos.forEach((d)=>{
+          console.log(d);
+          let res = {label: d, selected: false}
+          this.filter.push(res);
+        })
+      }
+
+  }
+
+  callIou(): void {
+
+    let iouRst: Data[];
     if (this.dadosRs && this.dadosGt) {
 
       iouRst = iou(this.dadosRs, this.dadosGt);
-      this.chartQtd(iouRst);
-      this.plotChartLine(iouRst);
+      this.data = iouRst;
+      this.chartQtd(this.data); // aqui quantificamos a quantidade de pessoasidentificada pelo algorítimo
+      this.plotChartLine(this.data); // aqui analisamos os erros como um todo
     }
-    this.plotCircle();
+    this.plotCircle(this.data);
   }
 
-  plotCircle():void{
+  plotCircle(data: any):void{
 
     this.widthImg = this.imgView.nativeElement.clientWidth;
     this.heightImg = this.imgView.nativeElement.clientHeight;
+
     let Drs: Data[] = [];
 
-    this.i++;
+    let slc = 0;
 
-    let rock = 0;
+    let selected:any;
+    selected = [... new Set(this.filter.map((item)=>item.selected))];
 
-    let slct:any;
-    slct = [... new Set(this.filter.map((item)=>item.selected))];
-
-    if(slct.indexOf(true)>0){
-      rock=1;
+    if(selected.indexOf(true)>0){
+      slc=1;
     }
 
-    if(!rock || this.filter[0].selected) {
-      Drs = this.dadosRs?.filter((dados) => dados.frame_id === this.sliderValue);
+    if(!slc || this.filter[0].selected) {
+      Drs = data.filter((dados:any) => dados.frame_id === this.sliderValue);
     }else{
-      Drs = this.dadosRs?.filter((dados) => dados.frame_id === this.sliderValue
+      Drs = data.filter((dados:any) => dados.frame_id === this.sliderValue
       && this.filter.some((item) => item.selected && item.label === CATEGORIES[dados.class])
       );
     }
-
       let result:number[] = [];
 
         if(Drs.length>0){
@@ -191,6 +199,8 @@ export class AlphavisComponent {
               }
 
           });
+
+         // console.log("DRS PLOT CIRCLE", Drs);
 
           let chartContainer: any = d3.select("#chart-container");
           chartContainer.selectAll("*").remove();
@@ -244,7 +254,7 @@ export class AlphavisComponent {
               function showTooltip(event: any, d: any) {
                   tooltip.style("visibility", "visible")
                       .style("opacity", 1)
-                      .text(`Id: ${d.person_id}   |  Ação: ${CATEGORIES[d.class]}`)
+                      .text(`Id: ${d.person_id? d.person_id: "S/I"}   |  Ação: ${CATEGORIES[d.class]}`)
                       .style('background-color', 'floralwhite')
                       .style('border-radius', '5px')
                       .style('padding', '10px')
@@ -264,19 +274,21 @@ export class AlphavisComponent {
               }
               circles.on("click", (event: any, d:any) => {
 
-                const navigationExtras: NavigationExtras = {
-                  state: {
-                    frame: this.sliderValue,
-                    id: d.person_id,
-                    classId: d.class,
-                    dados: this.dadosRs
-                  }
-                };
+                  if(d.person_id){
+                      const navigationExtras: NavigationExtras = {
+                        state: {
+                          frame: this.sliderValue,
+                          id: d.person_id,
+                          classId: d.class,
+                          dados: this.dadosRs
+                        }
+                      };
 
-                  this.router.navigateByUrl('/alphavis', { skipLocationChange: true }).then(() => {
-                  this.router.navigate(['alphavisId'], navigationExtras);
-                });
-               });
+                        this.router.navigateByUrl('/alphavis', { skipLocationChange: true }).then(() => {
+                        this.router.navigate(['alphavisId'], navigationExtras);
+                      });
+                  }
+              });
         }
 
   }
@@ -307,6 +319,7 @@ export class AlphavisComponent {
     data.forEach((item: any) => {
 
       const className = item.class;
+     // console.log(CATEGORIES[className]);
 
       if (!classCounts[className]) {
         if([10,13,11,79,16].indexOf(className)>=0)classCounts[className] = {count: 1, image: `../../../assets/img/img${className}.png`};
@@ -315,6 +328,8 @@ export class AlphavisComponent {
         classCounts[className].count++;
       }
     });
+
+    //console.log("PLOT INFO ACTION", classCounts)
     const finalData = Object.entries(classCounts).map(([className, { count, image }]) => ({
       class: CATEGORIES[parseInt(className)],
       count: count,
@@ -421,7 +436,7 @@ plotChartLine(data: Data[]): void{
 
       if (!frameGroups.has(frame)) frameGroups.set(frame, []);
 
-      const isValid = item.hasOwnProperty('valid') && item.valid === "false";
+      const isValid = item.hasOwnProperty('valid') && item.valid === false;
 
 
       if (isValid) {
@@ -489,23 +504,6 @@ plotChartLine(data: Data[]): void{
         .attr('class', 'y-axis')
         .attr("transform", `translate(${width}, 0)`)
         .call(d3.axisRight(y));
-
-
-      /*svgY.append("text")
-        .attr("class", "label")
-        .attr("text-anchor", "start")
-        .attr("x", width-40)
-        .attr("y", height + 20)
-        .text("Frames")
-        .attr("dy", ".76em");
-
-      svgY.append("text")
-        .attr("class", "label")
-        .attr("text-anchor", "end")
-        .attr("x", width/6 - 20)
-        .attr("y", height/7)
-        .attr("dy", ".75em")
-        .text("Erros por Frame");*/
 }
 
 
@@ -522,11 +520,11 @@ plotChartLine(data: Data[]): void{
         if (this.sliderValue < this.maxValue) {
           this.sliderValue += this.stepValue;
           this.atualizarImagem();
-          this.plotCircle()
+          this.plotCircle(this.data)
         } else {
           this.sliderValue = this.minValue;
           this.atualizarImagem();
-          this.plotCircle();
+          this.plotCircle(this.data);
         }
       }, 600);
     }

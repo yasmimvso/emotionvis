@@ -3,6 +3,13 @@ import { CATEGORIES } from '../alphavis/alphavis.categories';
 
 import * as d3 from 'd3';
 
+export function infoCard(dados:any, frame:any){
+
+  let rs = dados.filter((d:any) => {return d.frame_id == frame});
+
+  let infoCard = [... new Set(rs.map((item:any)=> CATEGORIES[item.class]))]
+  return infoCard
+}
 
 function calcSize(val1: any, val2: any){
   return Math.abs(val2 - val1);
@@ -13,14 +20,12 @@ export function plotInfo(width:any, height:any, frame:any, dados:any){
 let Drs = dados.filter((d:any) => {return d.frame_id == frame}
 );
 
-console.log(Drs)
 let result:number[] = [];
 
 
 let chartContainer: any = d3.select("#chart-container")
 chartContainer.selectAll("*").remove();
 
-console.log(chartContainer)
 
 if(Drs.length>0){
 
@@ -36,7 +41,7 @@ if(Drs.length>0){
       }
   });
 
-        let i = 8;
+        let i = -8;
 
         let svg= chartContainer
         .append("svg")
@@ -57,8 +62,8 @@ if(Drs.length>0){
           .attr("fill", 'none');
 
         rect.append("text")
-          .attr("x", (d: any) =>d.x - (d.width/2) + 15)
-          .attr("y", (d: any) =>  d.y - (d.height/2) - 5 + (i-=8))
+          .attr("x", (d: any) =>d.x - (d.width/2) + 20)
+          .attr("y", (d: any) =>  d.y - (d.height/2) - 20 + (i+=5))
           .attr("text-anchor", "end")
           .attr("dominant-baseline", "middle")
           .attr("fill",(d: any)=> d.valid == "false"? "red": "green")

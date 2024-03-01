@@ -24,7 +24,7 @@ export class TamplateComponent implements OnInit{
 
   createTeste():  void{
     this.displayNav = !this.displayNav;
-    console.log(this.displayNav);
+
   }
 
 }

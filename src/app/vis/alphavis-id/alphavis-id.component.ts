@@ -65,7 +65,7 @@ export class AlphavisIdComponent {
   sliderValue: number = 0;
   minValue: number = 32;
   maxValue: number = 1800;
-  stepValue: number = 1;
+  stepValue: number = 5;
   isPlaying: boolean = false;
   intervalId: any;
   imagemUrl: any;
@@ -118,13 +118,21 @@ load() {
   window.location.reload();
 }
 
-atualizarImagem() {
+async atualizarImagem() {
+
   this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+
+  //await this.esperar(850);
+
   this.plotRec();
   this.atualizaParagrafo();
 
+
 }
 
+async esperar(milissegundos: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, milissegundos));
+}
 ngAfterViewInit() {
 
   this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.state.frame}`;
@@ -214,7 +222,7 @@ changeByFilter(event:any){
     resultado = [... new Set(resultado.map((item:any)=>item.label))];
   }
   this.filterSelect = resultado;
-  //console.log("RESULTADO", resultado);
+
   this.plotRec();
 
 }
@@ -456,9 +464,6 @@ heatMap():void{
             }
         });
 
-
-          console.log(this.dadosHeatMap);
-
             var x = d3.scaleLinear()
           .domain([0, 300]).nice()
           .range([ margin.left, width - margin.right ]);
@@ -466,10 +471,6 @@ heatMap():void{
           var y = d3.scaleLinear()
           .domain([0, 300]).nice()
           .range([ height - margin.bottom, margin.top ]);
-
-         /*const xScale = d3.scaleLinear().domain([-4, 10]).range([0, width]);
-          const yScale = d3.scaleLinear().domain([-14, 29]).range([0, height]);*/
-
 
           var densityData = contourDensity()
           .x((d:any) => x(d.x))
@@ -479,10 +480,6 @@ heatMap():void{
           .thresholds(30)
           (this.dadosHeatMap);
 
-
-
-          //var densityData = d3.contourDensity();
-          console.log("DENSITYDATA", densityData);
 
           svg.selectAll("path")
           .data(densityData)
@@ -550,9 +547,7 @@ public ChartLine(){
 
   togglePlay() {
 
-    let widthImg = this.imgView.nativeElement.clientWidth;
-    let heightImg = this.imgView.nativeElement.clientHeight;
-
+    this.isPlaying = !this.isPlaying;
 
     if (!this.isPlaying) {
 
@@ -563,15 +558,14 @@ public ChartLine(){
         if (this.sliderValue < this.maxValue) {
           this.sliderValue += this.stepValue;
           this.atualizarImagem();
-          this.plotRec();
+          //this.plotRec();
         } else {
           this.sliderValue = this.minValue;
           this.atualizarImagem();
-          this.plotRec();
+           //this.plotRec();
         }
-      }, 500);
+      }, 600);
     }
-    this.isPlaying = !this.isPlaying;
   }
 
 }
