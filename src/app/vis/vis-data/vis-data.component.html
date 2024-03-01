@@ -1,0 +1,47 @@
+
+  <app-tamplate></app-tamplate>
+  <div>
+    <div class="main">
+        <app-nav></app-nav>
+        <div class="container-chart-main mat-elevation-z3">
+          <div class="text-alert-container">
+            <h2><em>Visualização de Dados Sumarizados</em></h2>
+            <p>Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
+          </div>
+          <div class="charts-data chart-contorn mat-elevation-z3">
+              <div class="img-plotBar chart-contorn mat-elevation-z3">
+                <div style="width: 90%; height: 45%; position: relative;">
+                  <img [src]="imagemUrl" alt="imagem.jpg" #img>
+                  <div id="chart-container"></div>
+                </div>
+                <mat-card class="mat-card">
+                  <h3 style="height: 100%; margin-right: 5%;">Action Erros:</h3>
+                  <h4 style="height: 100%; font-weight: bold;"><em>{{frame}}</em></h4>
+                </mat-card>
+                <div id="container-bar"></div>
+              </div>
+              <div class="pie-inf chart-contorn mat-elevation-z3">
+               <div id="container-pie" class="chart-contorn mat-elevation-z3"></div>
+               <div class="list-frame chart-contorn mat-elevation-z3">
+                <h2>Frames com maiores números de erros</h2>
+                <div class="description-frames-erros">
+                  <h3 style="color: black; width: 50%;"><em>Frames</em></h3>
+                  <h3 style="color: black; opacity: 0.8; width: 50%;"><em>Quantidade de erros</em></h3>
+                </div>
+                <div style="overflow-y: scroll; width: 100%; height: 85%;">
+                  <ng-container *ngFor="let trd of filter">
+                    <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
+                      <a (click)="changeImg(trd.frame)"><p>{{trd.frame}}</p></a>
+                      <p>{{trd.length}}</p>
+                    </div>
+                 </ng-container>
+                </div>
+               </div>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+
+

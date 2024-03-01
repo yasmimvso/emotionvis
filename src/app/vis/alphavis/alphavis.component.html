@@ -1,0 +1,66 @@
+<div class="content">
+  <mat-toolbar class="header mat-elevation-z4 "  >
+      <div style="width: 3%; height: 100%;">
+        <img src="../../../assets/img/teste.png" alt="logo foto">
+      </div>
+  </mat-toolbar>
+  <div class="main">
+    <app-nav style="height: 95vh; background-color: #3db5e7; "></app-nav>
+    <div class="content-frame">
+      <mat-card class="frames">
+        <div class="checkbox mat-elevation-z3">
+          <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtro por ação</h3> <!--modularizar-->
+                <ng-container class="filters" *ngFor="let trd of filter">
+                  <div class="checkbox-container">
+                    <input type="checkbox" [name]="trd.label" [checked]="trd.selected" (change)="changeByFilter($event)">
+                    <label style="font-size: 1.2rem;">{{ trd.label }}</label>
+                  </div>
+              </ng-container>
+        </div>
+        <div class="midia" >
+          <div style="height: 3%; display: flex; flex-direction:row; width: 30%; ">
+            <i class="material-icons v-middle" style="color: green; font-size: 13px;">
+              radio_button_checked
+            </i>
+            <p style="margin-right: 5%;">Correto</p>
+            <i  class="material-icons v-middle"style="color: red; font-size: 13px;">
+              radio_button_checked
+            </i>
+            <p >Errado</p>
+          </div>
+          <div class="div-view" >
+            <img [src]="imagemUrl" alt="imagem.jpg"   #imgView>
+            <div id="chart-container"  [style.opacity]="opacityRange" ></div>
+          </div>
+          <div class="slider-container">
+              <button class="play-button" (click)="togglePlay()">
+                  <i class="material-icons v-middle">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
+              </button>
+              <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
+                  [step]="stepValue" (input)="atualizarImagem()" />
+                  <i class="material-icons">
+                    opacity
+                  </i>
+              <input type="range" id="opacity" [(ngModel)]="opacityRange" min="0.30" max="0.50" step="0.01">
+          </div>
+        </div>
+      </mat-card>
+      <div class="date" >
+        <div  class="dataPlot  mat-elevation-z3" style=" border: 0.2rem solid #a7a7a7;" #dataPlot>
+          <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Quantidade de ações</h3>
+          <div id="dataPlot"></div>
+        </div>
+        <div class ="lineCard mat-elevation-z3" style=" box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);display: flex; justify-content: center;
+         border-radius: 10px; border: 0.2rem solid #a7a7a7; height: 90%; width: 70%; display: flex ;flex-direction: column;" #chartLine>
+         <h3>Relação de erros por frame</h3>
+          <svg id="plotLine" style="width:100%;"></svg>
+      </div>
+      </div>
+      <p class="developed">Desenvolvido por <strong>VOXAR</strong></p>
+    <div>
+    </div>
+  </div>
+</div>
+
+
+
