@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
-import { CATEGORIES  } from '../alphavis/alphavis.categories'
-import { iou } from '../alphavis/alphavis.iou'
-import {plotInfo} from './vis-data.infoPlot'
-import {infoCard} from './vis-data.infoPlot'
+import { CATEGORIES  } from '../../shared/functions/alphavis.categories'
+import { iou } from '../../shared/functions/alphavis.iou'
+import {plotInfo} from '../../shared/functions/vis-data.infoPlot'
+import {infoCard} from '../../shared/functions/vis-data.infoPlot'
 
 import { forkJoin } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';

@@ -1,5 +1,5 @@
-import { calcPoint } from '../alphavis/alphavis.points';
-import { CATEGORIES } from '../alphavis/alphavis.categories';
+import { calcPoint } from './alphavis.points';
+import { CATEGORIES } from './alphavis.categories';
 
 import * as d3 from 'd3';
 

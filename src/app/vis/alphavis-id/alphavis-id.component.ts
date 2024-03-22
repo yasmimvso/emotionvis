@@ -1,32 +1,11 @@
 import { Component,  OnInit, ViewChild, ElementRef} from '@angular/core';
 import { Router,  ActivatedRoute,  NavigationExtras} from '@angular/router';
 import { Location } from '@angular/common';
-import { calcPoint } from '../alphavis/alphavis.points';
-import { CATEGORIES } from '../alphavis/alphavis.categories';
-
+import { calcPoint } from '../../shared/functions/alphavis.points';
+import { CATEGORIES } from '../../shared/functions/alphavis.categories';
+import { Data, Canva}  from '../../shared/functions/interface'
 import * as d3 from 'd3';
 import { contourDensity } from "d3-contour";
-interface Data {
-  frame_id: any;
-  person_id: any;
-  bb_x1: any;
-  bb_y1: any;
-  bb_x2: any;
-  bb_y2: any;
-  class: any;
-  valid: any;
-  x: any;
-  y: any;
-  width: any;
-  height: any;
-};
-
-interface Canva{
-  x: any;
-  y: any;
-  label: string;
-  color: string
-};
 
 @Component({
   selector: 'app-alphavis-id',
@@ -84,8 +63,6 @@ constructor(private router: Router, private location: Location) {
       classId: any,
       dados: Data[]
     };
-
-    // inializando valores padrões
 
     this.idP = this.state.id;
     this.sliderValue = this.state.frame;

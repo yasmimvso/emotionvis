@@ -38,12 +38,6 @@ img{
   transform: scale(1.2);
 }
 
-.main{
-  display: flex;
-  flex-direction: row;
-  height: 94%;
-}
-
 .content-frame{
   display: flex;
   margin-top: 0.5%;

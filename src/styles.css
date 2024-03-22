@@ -1,4 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
 
 html, body {
    height: 100%;
@@ -9,18 +8,24 @@ body {
   margin: 0;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   color: "#000000DE";
- /* background-image: url("./assets/img/backgound-degrade.jfif");*/
 }
+
  h3, h4, h2{
   font-family: 'Quicksand', sans-serif;
   color: rgb(103, 104, 104);
 
  }
 
-/* definir classes globais*/
-
 .v-middle{
   vertical-align: middle;
+}
+
+
+.main{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 95%;
 }
 
 

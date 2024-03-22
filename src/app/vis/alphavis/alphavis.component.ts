@@ -2,27 +2,13 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
-import { CATEGORIES } from './alphavis.categories';
-import { iou } from './alphavis.iou';
-import { calcPoint } from './alphavis.points';
+import { CATEGORIES } from '../../shared/functions/alphavis.categories';
+import { iou } from '../../shared/functions/alphavis.iou';
+import { calcPoint } from '../../shared/functions/alphavis.points';
 import { Router,  NavigationExtras } from '@angular/router';
 import { SlideValueService  } from '../../services/slide-value.service'
-
+import { Data }  from '../../shared/functions/interface'
 import * as d3 from 'd3';
-
-interface Data {
-  frame_id: number;
-  person_id?: any;
-  bb_x1: any;
-  bb_y1: any;
-  bb_x2: any;
-  bb_y2: any;
-  class: any;
-  valid?: boolean;
-  x?: any;
-  y?: any;
-};
-
 
 @Component({
   selector: 'app-alphavis',
@@ -62,7 +48,6 @@ export class AlphavisComponent {
   dadosGt: Data[] = [];
   data: Data[] = [];
 
-  //router: Router;
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){
 
