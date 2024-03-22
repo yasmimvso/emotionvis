@@ -7,7 +7,8 @@ export function infoCard(dados:any, frame:any){
 
   let rs = dados.filter((d:any) => {return d.frame_id == frame});
 
-  let infoCard = [... new Set(rs.map((item:any)=> CATEGORIES[item.class]))]
+  let infoCard = [... new Set(rs.map((item:any)=> CATEGORIES[item.class]))];
+
   return infoCard
 }
 
@@ -17,13 +18,12 @@ function calcSize(val1: any, val2: any){
 
 export function plotInfo(width:any, height:any, frame:any, dados:any){
 
-let Drs = dados.filter((d:any) => {return d.frame_id == frame}
-);
+let Drs = dados.filter((d:any) => {return d.frame_id == frame});
 
 let result:number[] = [];
 
 
-let chartContainer: any = d3.select("#chart-container")
+let chartContainer: any = d3.select("#chart-container");
 chartContainer.selectAll("*").remove();
 
 
@@ -58,7 +58,7 @@ if(Drs.length>0){
           .attr("y", (d: any) => d.y - (d.height/2))
           .attr("width", (d: any) => d.width)
           .attr("height",(d: any) => d.height)
-          .attr("stroke", (d: any)=>d.valid == "false"? "red": "green")
+          .attr("stroke", (d: any)=>d.valid == false? "red": "green")
           .attr("fill", 'none');
 
         rect.append("text")
@@ -66,7 +66,7 @@ if(Drs.length>0){
           .attr("y", (d: any) =>  d.y - (d.height/2) - 20 + (i+=5))
           .attr("text-anchor", "end")
           .attr("dominant-baseline", "middle")
-          .attr("fill",(d: any)=> d.valid == "false"? "red": "green")
+          .attr("fill",(d: any)=> d.valid == false ? "red": "green")
           .text((d:any)=>CATEGORIES[d.class]);
   }
 }

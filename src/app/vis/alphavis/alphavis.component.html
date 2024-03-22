@@ -18,15 +18,25 @@
               </ng-container>
         </div>
         <div class="midia" >
-          <div style="height: 3%; display: flex; flex-direction:row; width: 30%; ">
-            <i class="material-icons v-middle" style="color: green; font-size: 13px;">
-              radio_button_checked
-            </i>
-            <p style="margin-right: 5%;">Correto</p>
-            <i  class="material-icons v-middle"style="color: red; font-size: 13px;">
-              radio_button_checked
-            </i>
-            <p >Errado</p>
+          <div style="height: 3%; display: flex; flex-direction:row; width: 60%;">
+            <div style="width: 20%; display: flex; flex-direction: row;">
+              <i class="material-icons v-middle" style="color: green; font-size: 13px;">
+                radio_button_checked
+              </i>
+              <p>Correto</p>
+            </div>
+            <div style="width: 20%; display: flex; flex-direction: row;">
+              <i  class="material-icons v-middle"style="color: red; font-size: 13px;">
+                radio_button_checked
+              </i>
+              <p style="margin-right: 5%; display: flex; flex-direction: row;">Errado</p>
+            </div>
+            <div style="width: 40%; display: flex; flex-direction: row;">
+              <i  class="material-icons v-middle"style="color: gray; font-size: 13px;">
+                radio_button_checked
+              </i>
+              <p>Não identificado</p>
+            </div>
           </div>
           <div class="div-view" >
             <img [src]="imagemUrl" alt="imagem.jpg"   #imgView>

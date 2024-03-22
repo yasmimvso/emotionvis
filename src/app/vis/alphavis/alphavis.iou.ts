@@ -77,10 +77,11 @@ export function iou(Datars: Data[], Datagt: Data[]){
           bb_y1: d.bb_x1,
           bb_x2: d.bb_y1,
           bb_y2: d.bb_x2,
+          person_id: undefined,
           class: parseInt(d.bb_y2) - 1, // grounding começa com 1 a análise das ações
           valid: false,
         }
-        console.log(object)
+        //console.log(object)
         new_Data_Union.push(object);
       })
 

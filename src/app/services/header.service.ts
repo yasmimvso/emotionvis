@@ -15,4 +15,5 @@ export class HeaderService {
     const currentDisplayNav = this.displayNavSource.value;
     this.displayNavSource.next(!currentDisplayNav);
   }
+
 }

@@ -7,7 +7,7 @@
           <img src="../../../assets/img/teste.png" alt="logo foto" class="logo">
         </a>
       </i>
-      <a class= "menu" routerLink="/alphavis" style="text-decoration: none;">
+      <a class= "menu" [routerLink]="rota" style="text-decoration: none;" (click)="toAlpha()">
         <i class="material-icons v-middle" >
           arrow_back
         </i>
@@ -62,7 +62,7 @@
         <div class="lineCharts">
           <div class="heatMap"  [style.background-color]="heatmapBackgroundColor" style="height: 100%; margin-top: 1%; border: 1px solid #c1bcbc; display: flex; flex-direction: column;">
           <div style="display: inline-flex; flex-direction: row; height:10%;">
-            <a class="sunny_heat" (click)="changeBackgroundColor()">
+            <a class="sunny_heat">
               <i class="material-icons" style="font-size: 2rem; ">
                 sunny
               </i>

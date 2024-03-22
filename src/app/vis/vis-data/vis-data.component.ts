@@ -58,9 +58,7 @@ export class VisDataComponent implements OnInit{
 
   changeImg(frame:any){
       this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${frame}`
-      // O dado é do IOU result
-      //callInfoByFrame(dados, altura, largura, frime)
-      //this.frame = frame;
+
       this.frame = infoCard(this.resultIou, frame)
       this.callInfoByFrame(this.resultIou,this.img.nativeElement.clientWidth, this.img.nativeElement.clientHeight, frame);
   }
@@ -119,6 +117,7 @@ export class VisDataComponent implements OnInit{
       let qtd = this.dadosRs.filter((item:any) => item.class == action)
       qtdByAcion.push([ CATEGORIES[action], qtd.length]);
     })
+
     this.createChart( qtdByAcion);
   }
 
@@ -141,12 +140,12 @@ export class VisDataComponent implements OnInit{
     let chart = anychart.column(dados);
     chart.title('Quantidade de ações detectadas');
     chart.container('container-bar');
-
+    chart.draw();
   }
 
   creatPieChart(data:any){
     let Piechart = anychart.pie(data);
-    Piechart.title('Errros (%) por ação');
+    Piechart.title('Errros (%) por ação')
     Piechart.container('container-pie');
     Piechart.draw();
   }
@@ -168,7 +167,7 @@ export class VisDataComponent implements OnInit{
 
       let errorArray: [string, number][] = Object.entries(errorByFrame);
 
-      errorArray = errorArray.filter(([frame_id, length]) => length > 1);
+      errorArray = errorArray.filter(([frame_id, length]) => length > 2);
 
       errorArray.sort((a, b) => (b[1] as number) - (a[1] as number));
 
@@ -176,6 +175,6 @@ export class VisDataComponent implements OnInit{
           this.filter.push({'length': length, 'frame': frame_id})
       });
 
-}
+  }
 
 }

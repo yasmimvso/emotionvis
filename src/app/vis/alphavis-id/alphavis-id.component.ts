@@ -1,13 +1,10 @@
 import { Component,  OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Router,  ActivatedRoute } from '@angular/router';
+import { Router,  ActivatedRoute,  NavigationExtras} from '@angular/router';
 import { Location } from '@angular/common';
 import { calcPoint } from '../alphavis/alphavis.points';
 import { CATEGORIES } from '../alphavis/alphavis.categories';
 
-
-
 import * as d3 from 'd3';
-import * as h337 from 'heatmap.js';
 import { contourDensity } from "d3-contour";
 interface Data {
   frame_id: any;
@@ -31,18 +28,6 @@ interface Canva{
   color: string
 };
 
-interface DataPoint {
-  x: number;
-  y: number;
-  value: number;
-}
-
-interface HeatmapData {
-  max: number;
-  min: number;
-  data: DataPoint[];
-}
-
 @Component({
   selector: 'app-alphavis-id',
   templateUrl: './alphavis-id.component.html',
@@ -52,11 +37,8 @@ export class AlphavisIdComponent {
 
   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
   @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
-  @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
   @ViewChild('barCharts', {static: true}) private barCharts! : ElementRef;
   @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
-
-  context: any;
 
   filter: any =[
     {label: "all", selected: false}
@@ -64,18 +46,25 @@ export class AlphavisIdComponent {
 
   sliderValue: number = 0;
   minValue: number = 32;
-  maxValue: number = 1800;
+  maxValue: number = 1800; // esse valor foi dado diante da quantidade de frames que foi cortado
   stepValue: number = 5;
   isPlaying: boolean = false;
-  intervalId: any;
-  imagemUrl: any;
   xhttp: number = 0;
   opacityRange: number = 0.46;
+  heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
+  heatmapBackgroundColor : string = "white";
+  flagAlter: boolean = true;
+
+
+  dataSet: Canva[] = [];
 
   state: any;
   idP : any;
+  context: any;
+  intervalId: any;
+  imagemUrl: any;
+  rota: any;
 
-  dataSet: Canva[] = [];
   chartOptions: any = {};
   chartInfo: any = {}
 
@@ -83,11 +72,9 @@ export class AlphavisIdComponent {
   filterSelect : any = [];
   dadosHeatMap: any = [];
 
-  heatmapBackgroundColor : string = "white";
-  flagAlter: boolean = true;
-  heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
 
 constructor(private router: Router, private location: Location) {
+
     location.getState();
 
     const navigation = this.router.getCurrentNavigation();
@@ -98,7 +85,14 @@ constructor(private router: Router, private location: Location) {
       dados: Data[]
     };
 
+    // inializando valores padrões
+
     this.idP = this.state.id;
+    this.sliderValue = this.state.frame;
+    this. minValue = this.state.dados[0].frame_id;
+    this.maxValue =  this.state.dados[ this.state.dados.length-1].frame_id;
+    this.filterSelect =  CATEGORIES[this.state.classId];
+
 }
 
 
@@ -118,39 +112,27 @@ load() {
   window.location.reload();
 }
 
-async atualizarImagem() {
+atualizarImagem() {
 
   this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
-
-  //await this.esperar(850);
 
   this.plotRec();
   this.atualizaParagrafo();
 
-
 }
 
-async esperar(milissegundos: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, milissegundos));
-}
 ngAfterViewInit() {
 
   this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.state.frame}`;
 
-  this.sliderValue = this.state.frame;
-  this. minValue = this.state.dados[0].frame_id;
-  this.maxValue =  this.state.dados[ this.state.dados.length-1].frame_id;
-  this.filterSelect =  CATEGORIES[this.state.classId];
+  let res = {};
 
-  this.idP = this.state.id;
-
-  let dadoById = this.state.dados.filter((item:any)=>{
+  let dadosById = this.state.dados.filter((item:any)=>{
     return item.person_id == this.state.id;
   })
 
-  let valoresDistintos = [...new Set(dadoById.map((item:any) => CATEGORIES[item.class]))];
+  let valoresDistintos = [...new Set(dadosById.map((item:any) => CATEGORIES[item.class]))];
 
-    let res = {};
     valoresDistintos.forEach((d)=>{
       if(d == CATEGORIES[this.state.classId])  res = {label: d, selected: true}
       else res = {label: d, selected: false}
@@ -168,20 +150,23 @@ ngAfterViewInit() {
 
 changeByFilter(event:any){
 
+  let resultado = Array();
+
       if(event.target.name == 'all'){
+        this.filter[0].selected = !this.filter[0].selected;
+
         if(event.target.checked){
-          this.filter[0].selected = !this.filter[0].selected;
+
           this.filter.forEach((item:any)=>{
               if(item.label != 'all'){
+                resultado.push(item.label);
                 if(item.selected) {
                   item.selected = !item.selected;
                 }
+
               }
 
-          })
-
-        }else{
-          this.filter[0].selected = !this.filter[0].selected;
+          });
         }
       }else {
         if(!event.target.checked){
@@ -202,29 +187,16 @@ changeByFilter(event:any){
 
         }
 
+      }
+
+    if(!this.filter[0].selected){
+      resultado = this.filter.filter((item:any)=>{
+        return item.selected == true;
+      });
+      resultado = [... new Set(resultado.map((item:any)=>item.label))];
     }
-
-  let resultado = Array();
-
-  if(this.filter[0].selected){
-    this.filter.filter((item:any)=>{
-      if(item.label != 'all'){
-        resultado.push(item.label);
-       }
-     }
-    );
-  }
-  else{
-    resultado = this.filter.filter((item:any)=>{
-      return item.selected == true;
-    });
-
-    resultado = [... new Set(resultado.map((item:any)=>item.label))];
-  }
-  this.filterSelect = resultado;
-
-  this.plotRec();
-
+    this.filterSelect = resultado;
+    this.plotRec();
 }
 
 
@@ -235,16 +207,18 @@ public percInf(){
 
    let action = [... new Set(result.map((item:any)=>item.class))];
 
+
    let data_certo = Array();
    let data_error = Array();
    let i=0;
    action.forEach((act:any)=>{
 
+
       let valid = result.filter((d:any)=>{
-        return (d.class == act) && d.valid == "true";
+        return (d.class == act) && d.valid === true;
       })
       let invalid = result.filter((d:any)=>{
-        return (d.class == act) && d.valid == "false";
+        return (d.class == act) && d.valid === false;
       })
 
       i++;
@@ -297,8 +271,8 @@ public percInf(){
 
 PlotdataSet(){
 
-  var aux =new Array();
-  let validAnt = '';
+  let aux = new Array();
+  let validAnt:any = '';
 
   let id = this.state.dados.filter((d:any)=>{
     return d.person_id == this.state.id;
@@ -316,20 +290,20 @@ PlotdataSet(){
       })
       rs.forEach((item:any)=>{
 
-        if(validAnt == "") validAnt = item.valid;
+        if(validAnt == '') validAnt = item.valid;
 
         if(validAnt == item.valid){
 
             if((item.frame_id - 1) != aux[aux.length-1]){
                   let n:any = action;
-                  let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt=="true"? "#3db5e7":"rgb(190, 186, 186)"};
+                  let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
                   this.dataSet.push(objeto);
                   aux.length = 0;
 
             }
             else if((aux.length + 1 == rs.length) && (item.frame_id - 1) == aux[aux.length-1]){
               let n:any = action;
-              let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt=="true"? "#3db5e7":"rgb(190, 186, 186)"};
+              let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
               this.dataSet.push(objeto);
               aux.length = 0;
             }
@@ -337,14 +311,14 @@ PlotdataSet(){
         }
         else if(aux.length == 1 && item.frame_id - 1 != aux[aux.length-1]){
               let n:any = action;
-              let objeto = {x: act.indexOf(action),y: [aux[0],aux[0]+1], label: CATEGORIES[n], color: validAnt=="true"? "#3db5e7":"rgb(190, 186, 186)"};
+              let objeto = {x: act.indexOf(action),y: [aux[0],aux[0]+1], label: CATEGORIES[n], color: validAnt === true? "#3db5e7":"rgb(190, 186, 186)"};
               this.dataSet.push(objeto);
               aux.length = 0;
         }
         else{
 
             let n:any = action;
-            let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt=="true"? "#3db5e7":"rgb(190, 186, 186)"};
+            let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
             this.dataSet.push(objeto);
             aux.length = 0;
             validAnt = item.valid;
@@ -411,7 +385,7 @@ plotRec(): void{
             .attr("y", (d: any) => d.y - (d.height/2))
             .attr("width", (d: any) => d.width)
             .attr("height",(d: any) => d.height)
-            .attr("stroke", (d: any)=> d.valid == "true"?"green": "red")
+            .attr("stroke", (d: any)=> d.valid == true ?"green": "red")
             .attr("fill", 'none');
 
           rect.append("text")
@@ -419,23 +393,22 @@ plotRec(): void{
             .attr("y", (d: any) =>  d.y - (d.height/2) - 5 + (i-=8))
             .attr("text-anchor", "end")
             .attr("dominant-baseline", "middle")
-            .attr("fill", (d: any)=> d.valid == "true"? "green": "red")
+            .attr("fill", (d: any)=> d.valid == true ? "green": "red")
             .text((d:any)=>CATEGORIES[d.class]);
 
     }
 }
+toAlpha(){
 
-changeBackgroundColor() {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        frame: this.state.frame,
+      }
+    };
 
-  if(this.flagAlter){
-    this.heatmapBackgroundColor = this.heatmapColorAlter[0];
-    this.flagAlter = !this.flagAlter;
-  }
-  else{
-    this.heatmapBackgroundColor = this.heatmapColorAlter[1];
-    this.flagAlter = !this.flagAlter;
-  }
+   this.router.navigate(['/alphavis'],  {state: {frame: this.state.frame}});
 }
+
 
 heatMap():void{
 
@@ -500,13 +473,12 @@ heatMap():void{
 }
 
 atualizaParagrafo():void{
+
   let rst = this.state.dados.filter((d:any)=>{
     return (d.person_id == this.state.id) && (d.frame_id <= this.sliderValue);
   })
 
-
-  let rstClass:any = [];
-  rstClass = [... new Set(rst.map((item:any)=>item.class))];
+  let rstClass:any =  [... new Set(rst.map((item:any)=>item.class))];
 
   this.paragrafos = rstClass;
 

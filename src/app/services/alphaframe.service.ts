@@ -8,13 +8,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FrameService {
-  private baseUrl = 'https://oraculo.cin.ufpe.br/api/activities'; // Substitua pela URL do seu servidor
+  private baseUrl = 'https://oraculo.cin.ufpe.br/api/activities';
 
   constructor(private http: HttpClient) { }
-
-  // Esse código só retorna os dados que estão em alphaction
-  // pra frame precisa colocar o restante, além disso a lógica é diferente por ter um slider
-
   getDataRs(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}`);
   }
