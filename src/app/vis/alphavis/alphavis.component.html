@@ -1,8 +1,8 @@
-<div class="content">
+<div class="alphavis">
   <app-tamplate></app-tamplate>
   <div class="main">
     <app-nav style="height: 95vh; background-color: #3db5e7; "></app-nav>
-    <div class="content-frame">
+    <div class="content">
       <mat-card class="frames">
         <div class="checkbox mat-elevation-z3">
           <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtro por ação</h3> <!--modularizar-->
@@ -35,7 +35,7 @@
             </div>
           </div>
           <div class="div-view" >
-            <img [src]="imagemUrl" alt="imagem.jpg"   #imgView>
+            <img class="img" [src]="imagemUrl" alt="imagem.jpg"   #imgView>
             <div id="chart-container"  [style.opacity]="opacityRange" ></div>
           </div>
           <div class="slider-container">
@@ -52,14 +52,13 @@
         </div>
       </mat-card>
       <div class="date" >
-        <div  class="dataPlot  mat-elevation-z3" style=" border: 0.2rem solid #a7a7a7;" #dataPlot>
+        <div  class="dataPlot  mat-elevation-z3" #dataPlot>
           <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Quantidade de ações</h3>
           <div id="dataPlot"></div>
         </div>
-        <div class ="lineCard mat-elevation-z3" style=" box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);display: flex; justify-content: center;
-         border-radius: 10px; border: 0.2rem solid #a7a7a7; height: 90%; width: 70%; display: flex ;flex-direction: column;" #chartLine>
-         <h3>Relação de erros por frame</h3>
-          <svg id="plotLine" style="width:100%;"></svg>
+        <div class ="lineCard mat-elevation-z3" class="plotLine-content" #chartLine>
+         <h3 >Relação de erros por frame</h3>
+         <svg id="plotLine" style="width:100%; height: 100%"></svg>
       </div>
       </div>
       <p class="developed">Desenvolvido por <strong>VOXAR</strong></p>

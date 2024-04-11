@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild,  HostListener} from '@angular/core';
 import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
 import { CATEGORIES } from '../../shared/functions/alphavis.categories';
@@ -16,15 +16,15 @@ import * as d3 from 'd3';
   styleUrls: ['./alphavis.component.css']
 })
 
-export class AlphavisComponent {
+export class AlphavisComponent implements OnInit{
 
-   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
-   @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
-   @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
+  @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
+  @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
+  @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
 
-   filter = [
-    {label: 'all', selected: false}
-   ];
+  filter = [
+  {label: 'all', selected: false}
+  ];
 
   heightLinePlot: number = 0;
   opacityRange: number = 0.46;
@@ -40,8 +40,6 @@ export class AlphavisComponent {
   heightImg:any;
   intervalId: any;
   teste: any;
-
-
   imagemUrl: any = 'https://oraculo.cin.ufpe.br/api/alphaction/frames0';
 
   dadosRs: Data[] = [];
@@ -49,18 +47,20 @@ export class AlphavisComponent {
   data: Data[] = [];
 
 
-  constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){
+  constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){}
 
-
-    const navigation = this.router.getCurrentNavigation();
-    console.log("navigation", navigation);
+  @HostListener('window:load', ['$event'])
+  onLoad() {
+    this.sliderValue = 0;
+    localStorage.setItem("sliderValue", "0");
+    this.plotChartLine(this.dadosRs, this.sliderValue);
+    this.atualizarImagem();
+    this.plotCircle(this.data);
   }
 
   atualizarImagem() {
     let result: any = this.slidVal.getSliderValue();
-
     if(result[0] && !this.sliderValue) this.sliderValue = result[0];
-
     this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
   }
 
@@ -100,17 +100,16 @@ export class AlphavisComponent {
       }
 
       this.plotCircle(this.data);
-      this.plotChartLine(this.dadosRs);
+      this.plotChartLine(this.dadosRs, this.sliderValue);
   }
+
 
   ngOnInit(): void{
 
-    window.addEventListener('load', function () {
-      console.log("reload")
-      localStorage.setItem("sliderValue", JSON.stringify(0));
+    window.addEventListener("resize", () => {
+      this.chartQtd(this.dadosRs);
+      this.plotChartLine(this.dadosRs, this.sliderValue);
     });
-
-    this.sliderValue = 0;
 
     this.atualizarImagem();
 
@@ -126,17 +125,17 @@ export class AlphavisComponent {
     })
   }
 
-  ngAfterViewInit(): void {
-  this.widthImg = this.imgView.nativeElement.clientWidth;
-  this.heightImg = this.imgView.nativeElement.clientHeight;
+  // ngAfterViewInit(): void {
+  // // this.widthImg = this.imgView.nativeElement.clientWidth;
+  // // this.heightImg = this.imgView.nativeElement.clientHeight;
 
-  }
+  // }
 
   selecItems(dadosRs:any){
 
       if(this.data){
 
-         this.filter.length = 0;
+        this.filter.length = 0;
 
         let valoresDistintos = [...new Set(dadosRs.map((item:any) => CATEGORIES[item.class]))];
         this.filter.push({label: 'all', selected: false});
@@ -153,12 +152,11 @@ export class AlphavisComponent {
 
     let iouRst: Data[];
     if (this.dadosRs && this.dadosGt) {
-      //console.log("ENTREI AQUI, TESTE");
-      //console.log(this.dadosGt)
+
       iouRst = iou(this.dadosRs, this.dadosGt);
       this.data = iouRst;
-      this.chartQtd(this.dadosRs); // aqui quantificamos a quantidade de pessoasidentificada pelo algorítimo
-      this.plotChartLine(this.data); // aqui analisamos os erros como um todo
+      this.chartQtd(this.dadosRs);
+      this.plotChartLine(this.data, this.sliderValue);
     }
     this.plotCircle(this.data);
   }
@@ -169,8 +167,15 @@ export class AlphavisComponent {
     this.heightImg = this.imgView.nativeElement.clientHeight;
 
     let Drs: Data[] = [];
-
     let slc = 0;
+
+    let chartContainer: any = d3.select("#chart-container");
+    chartContainer.selectAll("*").remove();
+
+
+    let limpar = d3.selectAll("#tooltip");
+    limpar.selectAll("*").remove();
+
 
     let selected:any;
     selected = [... new Set(this.filter.map((item)=>item.selected))];
@@ -198,16 +203,6 @@ export class AlphavisComponent {
               }
 
           });
-
-          //console.log("AQUII", Drs);
-
-         // console.log("DRS PLOT CIRCLE", Drs);
-
-          let chartContainer: any = d3.select("#chart-container");
-          chartContainer.selectAll("*").remove();
-
-          let limpar = d3.selectAll("#tooltip");
-          limpar.selectAll("*").remove();
 
                 let svg= chartContainer
                 .append("svg")
@@ -309,6 +304,7 @@ export class AlphavisComponent {
 
   chartQtd(data: any): void {
 
+
     const margin = { top: 10, right: 5, bottom: 5, left: 5 };
     const width = this.dataPlot.nativeElement.clientWidth/1.15 - margin.left - margin.right;
     const height = this.dataPlot.nativeElement.clientHeight/1.25  - margin.top - margin.bottom;
@@ -333,7 +329,6 @@ export class AlphavisComponent {
     data.forEach((item: any) => {
 
       const className = item.class;
-     // console.log(CATEGORIES[className]);
 
       if (!classCounts[className]) {
         if([10,13,11,79,16].indexOf(className)>=0)classCounts[className] = {count: 1, image: `../../../assets/img/img${className}.png`};
@@ -343,7 +338,6 @@ export class AlphavisComponent {
       }
     });
 
-    //console.log("PLOT INFO ACTION", classCounts)
     const finalData = Object.entries(classCounts).map(([className, { count, image }]) => ({
       class: CATEGORIES[parseInt(className)],
       count: count,
@@ -370,8 +364,8 @@ export class AlphavisComponent {
       .enter()
       .append("rect")
       .attr("class", "bar")
-      .attr("height", y.bandwidth() * 0.8)
-      .attr("width", (d:any) => x(d.count) * 0.8)
+      .attr("height", y.bandwidth() * 0.8 ) // deixar ele recursivo ao tamanho do container
+      .attr("width", (d:any) => x(d.count) * 0.8 )
       .attr("x", 0)
       .attr("y", (d:any) => y(d.class)!)
       .attr("fill", "#3498db")
@@ -406,7 +400,7 @@ export class AlphavisComponent {
     .attr("xlink:href", (d:any) => d.image)
     .attr("x", (d:any) => x(d.count) * 0.8 + 5)
     .attr("y", (d:any) => y(d.class)!)
-    .attr("width", 20)
+    .attr("width", y.bandwidth())
     .attr("height", y.bandwidth());
 
     svg.select(".domain").remove();
@@ -414,15 +408,14 @@ export class AlphavisComponent {
     svg.selectAll(".tick text").remove();
   }
 
-plotChartLine(data: Data[]): void{
+plotChartLine(data: Data[], currentFrame:any): void{
 
   const margin = { top: 20, right: 15, bottom: 50, left: 30 };
   let widthY = this.chartLine.nativeElement.clientWidth;
   let heightY = this.chartLine.nativeElement.clientHeight;
 
-
-    let width = widthY - margin.left - margin.right;
-    let height = heightY - margin.bottom;
+  let width = widthY ;
+  let height = heightY;
 
   let svgY = d3.select("#plotLine");
 
@@ -430,9 +423,6 @@ plotChartLine(data: Data[]): void{
 
     svgY
       .append('svg')
-      .attr("width", widthY)
-      .attr("height",  heightY)
-      .attr("class", "graph-svg-component")
       .append("g")
       .attr("transform", `translate(+ ${margin.left} +, + ${margin.top} +)`);
   }
@@ -444,7 +434,7 @@ plotChartLine(data: Data[]): void{
   data.forEach((item) => {
 
     const frame = item.frame_id;
-    this.rock= 0;
+    let flag = 0;
 
     if (frame !== undefined) {
 
@@ -456,15 +446,15 @@ plotChartLine(data: Data[]): void{
       if (isValid) {
         if (frameGroups.has(frame)) {
           this.filter.forEach(item=>{
-              if(item.selected)  this.rock = 1;
+              if(item.selected)  flag = 1;
           });
 
-          if(!this.filter[0].selected && this.rock){
-            this.rock = 0;
+          if(!this.filter[0].selected && flag){
+            flag = 0;
               this.filter.forEach(filter=>{
                 if((CATEGORIES[item.class] == filter.label) && filter.selected){
                   frameGroups.get(frame)!.push(item);
-                  this.rock=1;
+                  flag=1;
                 }
               })
           }
@@ -485,12 +475,12 @@ plotChartLine(data: Data[]): void{
 
       var x = d3.scaleLinear()
         .domain([d3.min(finalData, (d:any) => d.frame), d3.max(finalData, (d:any)=>d.frame)])
-        .range([0, width]);
+        .range([0, width * 0.9]);
 
       var y = d3.scaleLinear()
         .domain([0, d3.max(finalData, (d:any) => d.qtd + 0.5)])
         .nice()
-        .range([height + 1, 0]);
+        .range([height * 0.7, 0]); // modulariza o tamanho
 
       var line = d3
         .line<{ frame: number; qtd: number }>()
@@ -498,27 +488,56 @@ plotChartLine(data: Data[]): void{
         .y((d:any) =>y(d.qtd))
         .curve(d3.curveMonotoneX);
 
+      var area = d3
+        .area<{ frame: number; qtd: number }>()
+        .x((d:any) => x(d.frame))
+        .y0(height * 0.7)
+        .y1((d:any) => y(d.qtd));
+
       svgY
         .append("path")
         .datum(finalData)
-        .attr("fill", "none")
         .attr("stroke", "#3498db")
-        .attr("fill", "#3498db")
-        .attr("fill-opacity", 0.4)
+        .attr("fill", "none")
         .attr("stroke-width", 2)
         .attr("d", line);
 
+      svgY.append("path")
+        .datum(finalData)
+        .attr("class", "area")
+        .attr("fill", "#3498db")
+        .attr("fill-opacity", 0.4)
+        .attr("d", area);
 
-        svgY.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+        // svgY.append('g')
+        // .attr('class', 'x-axis')
+        // .attr('transform', `translate(0,${height})`)
+        // .call(d3.axisBottom(x));
 
        svgY.append('g')
         .attr('class', 'y-axis')
-        .attr("transform", `translate(${width}, 0)`)
+        .attr("transform", `translate(${width*0.91}, 0)`)
         .call(d3.axisRight(y));
-}
+
+        svgY
+        .append("line")
+        .attr("class", "current-frame-line")
+        .attr("x1", x(currentFrame))
+        .attr("y1", 0)
+        .attr("x2", x(currentFrame))
+        .attr("y2", height * 0.8)
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "5,5");
+
+        svgY
+        .append("text")
+        .attr("class", "current-frame-label")
+        .attr("x", x(currentFrame))
+        .attr("y", (height * 0.8) + 10)
+        .attr("text-anchor", "middle")
+        .text(`Frame ${currentFrame}`);
+    }
 
 
   togglePlay() {
@@ -533,11 +552,13 @@ plotChartLine(data: Data[]): void{
       this.intervalId = setInterval(() => {
         if (this.sliderValue < this.maxValue) {
           this.sliderValue += this.stepValue;
+          this.plotChartLine(this.dadosRs, this.sliderValue);
           //this.slidVal.setSliderValue(this.stepValue);
           this.atualizarImagem();
           this.plotCircle(this.data)
         } else {
           this.sliderValue = this.minValue;
+          this.plotChartLine(this.dadosRs, this.sliderValue);
           //this.slidVal.setSliderValue(this.sliderValue);
           this.atualizarImagem();
           this.plotCircle(this.data);

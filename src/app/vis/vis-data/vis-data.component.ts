@@ -8,23 +8,10 @@ import {infoCard} from '../../shared/functions/vis-data.infoPlot'
 
 import { forkJoin } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-
+import { Data } from 'src/app/shared/functions/interface';
 import 'anychart';
 
-interface Data {
-  frame_id: number;
-  person_id?: any;
-  bb_x1: any;
-  bb_y1: any;
-  bb_x2: any;
-  bb_y2: any;
-  class: any;
-  valid?: boolean;
-  x?: any;
-  y?: any;
-};
-
-
+// APENAS PRINTAR COISAS SE EXISTIR IMAGENS
 @Component({
   selector: 'app-vis-data',
   templateUrl: './vis-data.component.html',

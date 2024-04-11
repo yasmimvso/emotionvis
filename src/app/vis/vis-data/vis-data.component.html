@@ -10,7 +10,7 @@
           </div>
           <div class="charts-data chart-contorn mat-elevation-z3">
               <div class="img-plotBar chart-contorn mat-elevation-z3">
-                <div style="width: 90%; height: 45%; position: relative;">
+                <div class="view-img">
                   <img [src]="imagemUrl" alt="imagem.jpg" #img>
                   <div id="chart-container"></div>
                 </div>
@@ -18,10 +18,10 @@
                   <h3 style="height: 100%; width: 20%; display: inline-flex; flex-direction: row;">Action Erros:</h3>
                   <h3 style="height: 100%; width: 80%; font-weight:  bold;display: inline-flex; flex-direction: row;"><em>{{frame}}</em></h3>
                 </mat-card>
-                <div id="container-bar"></div>
+                <div id="container-bar" class="mat-elevation-z3"></div>
               </div>
               <div class="pie-inf chart-contorn mat-elevation-z3">
-               <div id="container-pie" class="chart-contorn mat-elevation-z3"></div>
+               <div id="container-pie" class="chart-contorn"></div>
                <div class="list-frame chart-contorn mat-elevation-z3">
                 <h2>Frames com maiores números de erros</h2>
                 <div class="description-frames-erros">
