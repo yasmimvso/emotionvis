@@ -1,6 +1,7 @@
 
 .header{
   background-image: url("../../../assets/img/degrade.png");
+  background-position: right;
   height: 5vh;
   display: flex;
 }

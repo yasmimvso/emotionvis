@@ -209,7 +209,7 @@ public percInf(){
    })
 
     const width =  this.barCharts.nativeElement.clientWidth;
-    const height =  this.barCharts.nativeElement.clientHeight * 1.3;
+    const height =  this.barCharts.nativeElement.clientHeight;
 
           this.chartInfo = {
             interactivityEnabled: true,
@@ -466,7 +466,7 @@ public ChartLine(){
   this.chartOptions = {
     interactivityEnabled: true,
     width: this.chartLine.nativeElement.clientWidth,
-    height:this.chartLine.nativeElement.clientHeight * 1.3,
+    height:this.chartLine.nativeElement.clientHeight ,
 		animationEnabled: true,
 		theme: "light2",
     axisY:{
