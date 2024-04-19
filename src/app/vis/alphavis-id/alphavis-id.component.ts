@@ -33,7 +33,7 @@ export class AlphavisIdComponent {
   heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
   heatmapBackgroundColor : string = "white";
   flagAlter: boolean = true;
-
+  sunnydisplay : boolean = false;
 
   dataSet: Canva[] = [];
 
@@ -386,6 +386,20 @@ toAlpha(){
    this.router.navigate(['/alphavis'],  {state: {frame: this.state.frame}});
 }
 
+changeVisibility():void{
+
+  let result = this.heatmapInf.nativeElement
+
+  if(!this.sunnydisplay){
+    result.setAttribute('style', 'visibility: visible');
+    this.sunnydisplay = !this.sunnydisplay;
+  }
+  else {
+    result.setAttribute('style', 'visibility: hidden');
+    this.sunnydisplay = !this.sunnydisplay;
+  }
+
+}
 
 heatMap():void{
 
@@ -395,58 +409,57 @@ heatMap():void{
 
     var svg = d3.select("#heatmap")
       .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
       .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        const color = d3.scaleSequential(d3.interpolateBlues)
-        .domain([-0.1, 0.75]);
+      const color = d3.scaleSequential(d3.interpolateBlues)
+      .domain([-0.1, 0.75]);
 
-          let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id);
-          dados.forEach((d:any)=>{
+      let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id);
+      dados.forEach((d:any)=>{
 
-            let result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2,this.heatmapInf.nativeElement.clientWidth, this.heatmapInf.nativeElement.clientHeight);
-            if(result){
-              let object = {x: result[0], y:result[1]};
-              this.dadosHeatMap.push(object);
-            }
-        });
+        let result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2,this.heatmapInf.nativeElement.clientWidth, this.heatmapInf.nativeElement.clientHeight);
+        if(result){
+          let object = {x: result[0], y:result[1]};
+          console.log(object);
+          this.dadosHeatMap.push(object);
+        }
+      });
 
-            var x = d3.scaleLinear()
-          .domain([0, 300]).nice()
-          .range([ margin.left, width - margin.right ]);
+        var x = d3.scaleLinear()
+        .domain([0, this.heatmapInf.nativeElement.clientWidth]).nice()
+        .range([0, this.heatmapInf.nativeElement.clientWidth]);
 
-          var y = d3.scaleLinear()
-          .domain([0, 300]).nice()
-          .range([ height - margin.bottom, margin.top ]);
+        var y = d3.scaleLinear()
+        .domain([0, this.heatmapInf.nativeElement.clientHeight]).nice()
+        .range([0, this.heatmapInf.nativeElement.clientHeight]);
 
-          var densityData = contourDensity()
-          .x((d:any) => x(d.x))
-          .y((d:any) => y(d.y))
-          .size([400, 320])
-          .bandwidth(20)
-          .thresholds(30)
-          (this.dadosHeatMap);
+        var densityData = contourDensity()
+        .x((d:any) => x(d.x))
+        .y((d:any) => y(d.y))
+        .size([800, 90]) // esse é o size da dimensão da densidade
+        .bandwidth(20)
+        .thresholds(30)
+        (this.dadosHeatMap);
+
+        svg.selectAll("path")
+        .data(densityData)
+        .enter()
+        .append("path")
+        .attr("d", d3.geoPath())
+        .attr("fill", "none")
+        .attr("stroke", "#84c0e9");
 
 
-          svg.selectAll("path")
-          .data(densityData)
-          .enter()
-          .append("path")
-          .attr("d", d3.geoPath())
-          .attr("fill", "none")
-          .attr("stroke", "#84c0e9");
-
-
-          svg.insert("g", "g")
-          .selectAll("path")
-          .data(densityData)
-          .enter()
-          .append("path")
-          .attr("d", d3.geoPath())
-          .attr("fill", function(d) { return color(d.value ); })
+        svg.insert("g", "g")
+        .selectAll("path")
+        .data(densityData)
+        .enter()
+        .append("path")
+        .attr("d", d3.geoPath())
+        .attr("fill", function(d) { return color(d.value ); })
 }
 
 atualizaParagrafo():void{
