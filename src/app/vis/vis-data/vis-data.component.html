@@ -1,5 +1,5 @@
 
-  <app-tamplate></app-tamplate>
+  <app-tamplate [idVis]="id"></app-tamplate>
   <div>
     <div class="main">
         <app-nav></app-nav>
@@ -10,33 +10,42 @@
           </div>
           <div class="charts-data chart-contorn mat-elevation-z3">
               <div class="img-plotBar chart-contorn mat-elevation-z3">
+                <!--INCLUIR DESCRIÇÃO-->
+                <p>Frames com maiores números de erros</p>
                 <div class="view-img">
                   <img [src]="imagemUrl" alt="imagem.jpg" #img>
                   <div id="chart-container"></div>
                 </div>
                 <mat-card class="mat-card">
-                  <h3 style="height: 100%; width: 20%; display: inline-flex; flex-direction: row;">Action Erros:</h3>
-                  <h3 style="height: 100%; width: 80%; font-weight:  bold;display: inline-flex; flex-direction: row;"><em>{{frame}}</em></h3>
+                  <h3 style="height: 100%; max-width: 20%; display: inline-flex; flex-direction: row;">Erros:</h3>
+                  <h3 style="height: 100%; min-width: 80%; font-weight:  bold;display: inline-flex; flex-direction: row;" *ngIf="frame"><em>{{frame}}</em></h3>
                 </mat-card>
-                <div id="container-bar" class="mat-elevation-z3"></div>
+
+                <div class="list-frame chart-contorn mat-elevation-z3">
+                  <div class="description-frames-erros">
+                    <div class="title-frame-icon">
+                      <a matTooltip="Os frames são clicáveis" matTooltipClass="example-tooltip-uppercase" class="icon-click">
+                        <i class="material-icons" style="font-size: 1.7rem;">touch_app</i>
+                      </a>
+                      <h3 style="color: black;"><em>Frames</em></h3>
+                    </div>
+                    <div style="width: 50%; text-align: center;">
+                      <h3 style="color: black; opacity: 0.8; "><em>Quantidade de erros</em></h3>
+                    </div>
+                  </div>
+                  <div style="overflow-y: scroll; width: 100%; height: 85%;">
+                    <ng-container *ngFor="let trd of filter">
+                      <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
+                        <a (click)="changeImg(trd.frame)" class="descFrame-list"><p>{{trd.frame}}</p></a>
+                        <p>{{trd.length}}</p>
+                      </div>
+                   </ng-container>
+                  </div>
+                 </div>
               </div>
               <div class="pie-inf chart-contorn mat-elevation-z3">
-               <div id="container-pie" class="chart-contorn"></div>
-               <div class="list-frame chart-contorn mat-elevation-z3">
-                <h2>Frames com maiores números de erros</h2>
-                <div class="description-frames-erros">
-                  <h3 style="color: black; width: 50%;"><em>Frames</em></h3>
-                  <h3 style="color: black; opacity: 0.8; width: 50%;"><em>Quantidade de erros</em></h3>
-                </div>
-                <div style="overflow-y: scroll; width: 100%; height: 85%;">
-                  <ng-container *ngFor="let trd of filter">
-                    <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
-                      <a (click)="changeImg(trd.frame)"><p>{{trd.frame}}</p></a>
-                      <p>{{trd.length}}</p>
-                    </div>
-                 </ng-container>
-                </div>
-               </div>
+               <div id="containerBar" class="container-bar mat-elevation-z3" #containerBar></div>
+               <div id="containerPie" class="container-bar mat-elevation-z3" #containerPie></div>
               </div>
           </div>
         </div>

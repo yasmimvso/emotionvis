@@ -26,8 +26,7 @@ import {AlphavisIdComponent} from './vis/alphavis-id/alphavis-id.component'
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { VisDataComponent } from './vis/vis-data/vis-data.component'
 import {ChartComponent} from './component/chart/chart.component'
-
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,8 +49,8 @@ import {ChartComponent} from './component/chart/chart.component'
     RoutingModule,
     FormsModule,
     HttpClientModule,
-    CanvasJSAngularChartsModule
-
+    CanvasJSAngularChartsModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

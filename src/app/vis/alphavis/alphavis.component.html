@@ -1,17 +1,20 @@
 <div class="alphavis">
-  <app-tamplate></app-tamplate>
+  <app-tamplate [idVis]="vis"></app-tamplate>
   <div class="main">
     <app-nav style="height: 95vh; background-color: #3db5e7; "></app-nav>
     <div class="content">
+      <h2 class="title-top">
+        EmotionVIS / AlphaVis
+      </h2>
       <mat-card class="frames">
         <div class="checkbox mat-elevation-z3">
-          <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtro por ação</h3> <!--modularizar-->
-                <ng-container class="filters" *ngFor="let trd of filter">
-                  <div class="checkbox-container">
-                    <input type="checkbox" [name]="trd.label" [checked]="trd.selected" (change)="changeByFilter($event)">
-                    <label style="font-size: 1.2rem;">{{ trd.label }}</label>
-                  </div>
-              </ng-container>
+          <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtro por ação</h3>
+          <ng-container class="filters" *ngFor="let trd of filter">
+            <div class="checkbox-container">
+              <input type="checkbox" [name]="trd.label" [checked]="trd.selected" [disabled]="trd.disable" (change)="changeByFilter($event)">
+              <label style="font-size: 1.2rem; ">{{ trd.label }}</label>
+            </div>
+          </ng-container>
         </div>
         <div class="midia" >
           <div style="height: 3%; display: flex; flex-direction:row; width: 60%;">
@@ -43,7 +46,7 @@
                   <i class="material-icons v-middle">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
               </button>
               <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
-                  [step]="stepValue" (input)="atualizarImagem()" />
+                  [step]="stepValue" (change)="atualizarImagem()"/>
                   <i class="material-icons">
                     opacity
                   </i>
@@ -62,7 +65,7 @@
       </div>
       </div>
       <p class="developed">Desenvolvido por <strong>VOXAR</strong></p>
-    <div>
+      <div>
     </div>
   </div>
 </div>
