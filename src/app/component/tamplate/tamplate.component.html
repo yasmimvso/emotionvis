@@ -1,12 +1,19 @@
 
 <mat-toolbar class="header mat-elevation-z4">
-      <div style="width: 3%; height: 100%;">
-        <img src="../../../assets/img/logo.png" alt="logo foto" class="logo">
-      </div>
-   <a class="menu"  (click)="toggleNav()" style="padding: 2% 0% 2% 2%;">
-    <i class="material-icons" >
-      menu
-    </i>
-   </a>
+    <div style="width: 3%; height: 100%;">
+      <img src="../../../assets/img/logo.png" alt="logo foto" class="logo">
+    </div>
+
+    <a class="menu"  (click)="toggleNav()" style="padding: 2% 0% 2% 2%;" *ngIf="!idVis">
+      <i class="material-icons" >
+        menu
+      </i>
+    </a>
+
+    <a class="menu"  routerLink="/alphavis" style="padding: 2% 0% 2% 2%;" *ngIf="idVis">
+      <i class="material-icons">
+        keyboard_backspace
+      </i>
+    </a>
 </mat-toolbar>
 

@@ -20,7 +20,7 @@ export class AlphavisIdComponent {
   @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
 
   filter: any =[
-    {label: "all", selected: false}
+    {label: "All", selected: false, disabled: false}
   ];
 
   sliderValue: number = 0;
@@ -50,7 +50,7 @@ export class AlphavisIdComponent {
   paragrafos: any = [];
   filterSelect : any = [];
   dadosHeatMap: any = [];
-
+  vis: any = false;
 
 constructor(private router: Router, private location: Location) {
 
@@ -111,8 +111,8 @@ ngAfterViewInit() {
   let valoresDistintos = [...new Set(dadosById.map((item:any) => CATEGORIES[item.class]))];
 
     valoresDistintos.forEach((d)=>{
-      if(d == CATEGORIES[this.state.classId])  res = {label: d, selected: true}
-      else res = {label: d, selected: false}
+      if(d == CATEGORIES[this.state.classId])  res = {label: d, selected: true, disabled: false}
+      else res = {label: d, selected: false, disabled: true}
 
       this.filter.push(res);
     })
@@ -129,13 +129,14 @@ changeByFilter(event:any){
 
   let resultado = Array();
 
-      if(event.target.name == 'all'){
+      if(event.target.name == 'All'){
         this.filter[0].selected = !this.filter[0].selected;
+        this.filter[0].disabled = true;
 
         if(event.target.checked){
 
           this.filter.forEach((item:any)=>{
-              if(item.label != 'all'){
+              if(item.label != 'All'){
                 resultado.push(item.label);
                 if(item.selected) {
                   item.selected = !item.selected;
@@ -221,7 +222,7 @@ public percInf(){
               gridThickness: 0
             },
             axisX: {
-              title: "Métricas por ações(%)",
+              title: "Estatísticas por ações(%)",
               gridThickness: 0,
               lineThickness: 0,
               tickThickness: 0
@@ -231,20 +232,19 @@ public percInf(){
               type: "stackedBar",
               showInLegend: true,
               yValueFormatString: "#0.#%",
-              legendText: "true",
+              legendText: "correto",
               color: "#3db5e7",
               dataPoints: data_certo
             },{
               type: "stackedBar",
               showInLegend: true,
               yValueFormatString: "#0.#%",
-              legendText: "false",
+              legendText: "errado",
               color: "rgb(190, 186, 186)",
               dataPoints: data_error
             }]
           }
 }
-
 
 PlotdataSet(){
 
@@ -423,7 +423,6 @@ heatMap():void{
         let result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2,this.heatmapInf.nativeElement.clientWidth, this.heatmapInf.nativeElement.clientHeight);
         if(result){
           let object = {x: result[0], y:result[1]};
-          console.log(object);
           this.dadosHeatMap.push(object);
         }
       });

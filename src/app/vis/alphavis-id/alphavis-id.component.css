@@ -12,9 +12,9 @@
 .checkbox{
   display: flex;
   flex-direction: column;
-  height: 80%;
-  width: 18%;
-  margin-top: 1%;
+  height: 70%;
+  width: 20%;
+  margin-top: 2%;
   border-radius: 15px;
   background-color: rgba(240, 235, 235, 0.807);
 }
@@ -29,7 +29,7 @@
 }
 
 .view{
-  height: 43%;
+  height: 40%;
   width: 85%;
   display: flex;
   flex-direction: row;
@@ -84,12 +84,12 @@ label{
 }
 
 .checkbox-container input{
-  height: 50%;
-  width: 15%;
+  height: 60%;
+  width: 30%;
   border: 1px solid rgb(190, 186, 186);
   border-radius: 2px;
   margin:0;
-
+  cursor: pointer;
 }
 
 .video{

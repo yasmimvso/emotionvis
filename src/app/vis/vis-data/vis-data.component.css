@@ -3,6 +3,7 @@
   flex-direction: row;
   width: 100vw;
   height: 92vh;
+  cursor: default;
 }
 
 .container-chart-main{
@@ -52,7 +53,7 @@ h2, p{
   flex-direction: column;
   height: 100%;
   width: 50%;
-  background-color: #77caed;
+  background-color: #3db5e7;
   align-items: center;
   justify-content: space-around;
 }
@@ -83,7 +84,7 @@ img{
   margin-top: 1%;
   background-color: #ccc;
 }
-#container-bar{
+.container-bar{
   width: 90%;
   height: 40%;
 }
@@ -104,12 +105,13 @@ img{
 .description-frames-erros{
   height: 15%;
   width: 100%;
-  justify-content:space-around;
+  align-items: center;
+  text-align: center;
+  justify-content:space-evenly;
   display: flex;
   flex-direction: raw;
-  margin-bottom: 4%;
   border-bottom: 1px solid gray;
-  background-color:  #77caed;
+  background-color:  #3db5e7;
   opacity: 0.8;
 }
 
@@ -125,7 +127,23 @@ img{
   flex-direction: column;
   text-align: center;
   background-color: rgba(240, 235, 235, 0.807);
+  background-color: #ffff;
   width: 90%;
-  height: 50%;
+  height: 40%;
+}
+.descFrame-list:hover{
+  cursor: pointer;
+}
+
+.title-frame-icon{
+  display:inline-flex;
+  width: 50%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-click{
+  cursor: default;
 }
 
