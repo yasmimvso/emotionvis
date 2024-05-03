@@ -9,7 +9,6 @@ import { Router,  NavigationExtras } from '@angular/router';
 import { SlideValueService  } from '../../services/slide-value.service'
 import { Data }  from '../../shared/functions/interface'
 import * as d3 from 'd3';
-import { event } from 'cypress/types/jquery';
 
 @Component({
   selector: 'app-alphavis',
