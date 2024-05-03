@@ -19,3 +19,9 @@ export interface Canva{
   label: string;
   color: string
 };
+
+export interface Filter{
+  label: String;
+  selected: boolean;
+  disabled: boolean;
+}

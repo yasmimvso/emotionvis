@@ -43,7 +43,7 @@ export class VisDataComponent implements OnInit{
 
   resultIou: Data[] = []
   filter: any = [];
-  id: any = true;
+  id: boolean = false;
 
   ngOnInit(): void {
     this.loadInfo();
@@ -286,7 +286,7 @@ export class VisDataComponent implements OnInit{
       let errorByFrame : any = [];
       let result : any = [];
 
-      result = dados.filter((item:any)=>{return item.valid == false})
+      result = dados.filter((item:any)=>{return item.valid == false && item.frame_id <= 1800})
 
       result.forEach((item: any) => {
 
@@ -298,7 +298,7 @@ export class VisDataComponent implements OnInit{
 
       let errorArray: [string, number][] = Object.entries(errorByFrame);
 
-      errorArray = errorArray.filter(([frame_id, length]) => length > 2);
+      errorArray = errorArray.filter(([frame_id, length]) => length >= 2);
 
       errorArray.sort((a, b) => (b[1] as number) - (a[1] as number));
 

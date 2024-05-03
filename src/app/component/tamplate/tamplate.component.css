@@ -12,10 +12,14 @@ img{
 }
 .menu{
   padding: 0 10%;
+  color: black;
 }
 .menu i{
   font-size: 90%;
 }
 .menu:hover{
   cursor: pointer;
+}
+.menu::after{
+  color: black;
 }
