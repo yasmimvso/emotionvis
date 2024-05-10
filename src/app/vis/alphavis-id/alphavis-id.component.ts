@@ -23,6 +23,7 @@ export class AlphavisIdComponent {
     {label: "All", selected: false, disabled: false}
   ];
 
+
   sliderValue: number = 0;
   minValue: number = 32;
   maxValue: number = 1800; // esse valor foi dado diante da quantidade de frames que foi cortado
@@ -30,9 +31,6 @@ export class AlphavisIdComponent {
   isPlaying: boolean = false;
   xhttp: number = 0;
   opacityRange: number = 0.46;
-  heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
-  heatmapBackgroundColor : string = "white";
-  flagAlter: boolean = true;
   sunnydisplay : boolean = false;
 
   dataSet: Canva[] = [];
@@ -50,13 +48,15 @@ export class AlphavisIdComponent {
   paragrafos: any = [];
   filterSelect : any = [];
   dadosHeatMap: any = [];
-  vis: any = false;
+  heatmapStatus : String = "HM ON";
+
 
 constructor(private router: Router, private location: Location) {
 
     location.getState();
 
     const navigation = this.router.getCurrentNavigation();
+
     this.state = navigation!.extras.state as {
       frame: number,
       id: any,
@@ -67,7 +67,7 @@ constructor(private router: Router, private location: Location) {
     this.idP = this.state.id;
     this.sliderValue = this.state.frame;
     this. minValue = this.state.dados[0].frame_id;
-    this.maxValue =  this.state.dados[ this.state.dados.length-1].frame_id;
+    // this.maxValue =  this.state.dados[ this.state.dados.length-1].frame_id;
     this.filterSelect =  CATEGORIES[this.state.classId];
 
 }
@@ -92,7 +92,6 @@ load() {
 atualizarImagem() {
 
   this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
-
   this.plotRec();
   this.atualizaParagrafo();
 
@@ -105,7 +104,7 @@ ngAfterViewInit() {
   let res = {};
 
   let dadosById = this.state.dados.filter((item:any)=>{
-    return item.person_id == this.state.id;
+    return (item.person_id == this.state.id) && (item.frame_id <=1800);
   })
 
   let valoresDistintos = [...new Set(dadosById.map((item:any) => CATEGORIES[item.class]))];
@@ -117,10 +116,11 @@ ngAfterViewInit() {
       this.filter.push(res);
     })
 
+   this.plotRec();
    this.atualizaParagrafo();
-   this.PlotdataSet();
+   this.PlotdataSet(dadosById);
    this.ChartLine();
-   this.percInf();
+   this.percInf(dadosById);
    this.heatMap();
 }
 
@@ -178,13 +178,9 @@ changeByFilter(event:any){
 }
 
 
-public percInf(){
-   let result = this.state.dados.filter((item:any)=>{
-        return (item.person_id == this.state.id)
-   })
+public percInf(result: Data[]){
 
    let action = [... new Set(result.map((item:any)=>item.class))];
-
 
    let data_certo = Array();
    let data_error = Array();
@@ -222,7 +218,7 @@ public percInf(){
               gridThickness: 0
             },
             axisX: {
-              title: "Estatísticas por ações(%)",
+              title: "Métricas ações(%)",
               gridThickness: 0,
               lineThickness: 0,
               tickThickness: 0
@@ -246,17 +242,12 @@ public percInf(){
           }
 }
 
-PlotdataSet(){
+PlotdataSet(id:Data[]){
 
   let aux = new Array();
   let validAnt:any = '';
 
-  let id = this.state.dados.filter((d:any)=>{
-    return d.person_id == this.state.id;
-  });
-
   let act = [... new Set(id.map((item:any)=>item.class))];
-
 
     act.forEach((action)=>{
 
@@ -393,10 +384,12 @@ changeVisibility():void{
   if(!this.sunnydisplay){
     result.setAttribute('style', 'visibility: visible');
     this.sunnydisplay = !this.sunnydisplay;
+    this.heatmapStatus = "HM OFF";
   }
   else {
     result.setAttribute('style', 'visibility: hidden');
     this.sunnydisplay = !this.sunnydisplay;
+    this.heatmapStatus = "HM ON";
   }
 
 }
@@ -463,13 +456,25 @@ heatMap():void{
 
 atualizaParagrafo():void{
 
-  let rst = this.state.dados.filter((d:any)=>{
+
+  this.paragrafos.length = 0;
+  let rst = this.state.dados.filter((d:Data)=>{
     return (d.person_id == this.state.id) && (d.frame_id <= this.sliderValue);
   })
 
-  let rstClass:any =  [... new Set(rst.map((item:any)=>item.class))];
+  let rstClassQtd = rst.map((item:Data)=>CATEGORIES[item.class]);
 
-  this.paragrafos = rstClass;
+  // console.log("map class rts walk:::\n", rstClassQtd.filter((item:string)=> item == "walk").length);
+
+  let rstClass:any =  [... new Set(rst.map((item:any)=>item.class))];
+  var objectClass = {img: 0, categorie: "string", quantideCat: 0}; // setando tipificação
+
+  rstClass.forEach((classId:number)=>{
+    objectClass = {img: classId, categorie : CATEGORIES[classId],
+    quantideCat:rstClassQtd.filter((item:string)=> item == CATEGORIES[classId]).length };
+
+    this.paragrafos.push(objectClass);
+  })
 
 }
 
@@ -519,11 +524,9 @@ public ChartLine(){
         if (this.sliderValue < this.maxValue) {
           this.sliderValue += this.stepValue;
           this.atualizarImagem();
-          //this.plotRec();
         } else {
           this.sliderValue = this.minValue;
           this.atualizarImagem();
-           //this.plotRec();
         }
       }, 600);
     }

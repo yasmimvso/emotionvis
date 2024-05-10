@@ -1,9 +1,14 @@
 <div class="alphavis">
-  <app-tamplate [idVis]="vis"></app-tamplate>
+  <app-tamplate></app-tamplate>
   <div class="main">
     <app-nav  style="height: 95vh; background-color: #3db5e7;"></app-nav>
     <div class="content">
-      <h2 style="color:#686767; margin-top: -3%;">EmotionVIS / Detecção de Ações Individuais</h2>
+      <div class="section-initial">
+        <a class="back-content" routerLink="/alphavis">
+          <img src="../../../assets/img/seta1.png" class="back">
+        </a>
+        <h2 class="title">EmotionVIS / Detecção de Ações Individuais</h2>
+      </div>
         <div class="view mat-elevation-z4">
           <div class="checkbox mat-elevation-z3">
             <h3 style="padding: 8px; border-bottom: 1px solid #a7a7a7; text-align: center;">Filtro por ação</h3>
@@ -27,22 +32,23 @@
               </button>
               <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
                   [step]="stepValue"  (input)="atualizarImagem()"/>
-              <a class="sunny_heat" (click)="changeVisibility()" matTooltip="Áreas com maiores circulações" matTooltipClass="example-tooltip-uppercase">
-                <i class="material-icons" style="font-size: 2rem; ">
+              <a class="sunny_heat" (click)="changeVisibility()" matTooltip="Heat Map: Área de concentração espacial individual" matTooltipClass="'example-tooltip-uppercase'">
+                <!-- <i class="material-icons" style="font-size: 2rem; ">
                   sunny
-                </i>
+                </i> -->
+                {{"["+ " " + heatmapStatus + " " + "]"}}
               </a>
            </div>
           </div>
           <div class="person-data">
-            <div style="height: 40%; overflow: auto;" class="actions mat-elevation-z3">
-              <h3 style="margin: 0; padding-top: 1%; border-bottom: 1px solid #a7a7a7; text-align: center;">Ações no tempo</h3>
-              <section style="display: inline-flex; gap: 30px">
+            <div class="actions mat-elevation-z3">
+              <h3 class="actions-title">Ações no tempo</h3>
+              <section class="actions-info">
                   <p style="margin-left: 20px;">Frame: {{sliderValue}}</p>
                   <p>id {{idP}}</p>
               </section>
               <div class="plotInf">
-                <img style="margin-right: 1%; width: 8%; height: 3%;" *ngFor="let paragrafo of paragrafos" [src]="'../../../assets/img/img' + paragrafo + '.png'" alt="acoes">
+                <img style="margin-right: 1%; width: 8%; height: 3%;" *ngFor="let paragrafo of paragrafos" [src]="'../../../assets/img/img' + paragrafo.img + '.png'" alt="acoes" [matTooltip]="'ação: ' + paragrafo.categorie + '/' + 'total: ' + paragrafo.quantideCat" matTooltipClass="example-tooltip-uppercase">
               </div>
           </div>
             <div  class="bar-chart mat-elevation-z3" #barCharts>
@@ -51,26 +57,12 @@
             </div>
           </div>
         </div>
-        <div class="lineCharts">
-          <div class="heatMap"  [style.background-color]="heatmapBackgroundColor" >
-          <!-- <div style="display: inline-flex; flex-direction: row; height:10%;">
-            <a class="sunny_heat">
-              <i class="material-icons" style="font-size: 2rem; ">
-                sunny
-              </i>
-            </a>
-            <h3 style="text-align: center; height: 100%; margin:0">Regiões com maior detecção de emoções</h3>
-          </div>
-
-            <!-- <div style="height: 90%; width: 100%;">
-              <div #heatmap id="heatmap" class="heatmap-container" ></div>
-            </div>
-
-          </div> -->
-           <div class="chartLine mat-elevation-z4" #chartLine>
+        <div class="lineCharts mat-elevation-z3">
+          <div class="chartLine mat-elevation-z4" #chartLine>
             <canvasjs-chart  [options]="chartOptions" class="canvas-range-chart"></canvasjs-chart>
-           </div>
+          </div>
         </div>
     </div>
   </div>
+  <app-footer></app-footer>
 </div>

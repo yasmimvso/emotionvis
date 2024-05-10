@@ -9,6 +9,18 @@
   margin-top: 0.5%;
 }
 
+.section-initial{
+  width: 100%;
+  height: 5%;
+  justify-content:space-evenly;
+  display: inline-flex;
+}
+
+.back-content::hover{
+  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+  transform: scale(1.2);
+}
+
 .checkbox{
   display: flex;
   flex-direction: column;
@@ -28,9 +40,20 @@
   flex-direction: row;
 }
 
+.back{
+  width: 90%;
+  height: 90%;
+  color: black;
+}
+
+.title{
+  color:#686767;
+  font-size: 200%;
+  margin-right: 20%;
+}
 .view{
-  height: 40%;
-  width: 85%;
+  height: 43%;
+  width: 77%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -38,7 +61,7 @@
   padding: 1%;
   border: 0.2rem solid #a7a7a7;
   border-radius: 1.2rem;
-  margin-top:0.5%;
+  margin-top:2%;
 }
 
 .person-data{
@@ -50,10 +73,17 @@
 }
 
 .lineCharts{
-  height: 34%;
-  width: 90%;
+  height: 30%;
+  width: 77%;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  float: left;
+  background-color: rgba(240, 235, 235, 0.807);
+  padding: 1%;
+  border: 0.2rem solid #a7a7a7;
+  border-radius: 1.2rem;
+  margin-top:0.5%;
 }
 
 .bar-chart{
@@ -145,6 +175,7 @@ label{
    /*background-color:rgba(225, 218, 218, 0.807);*/
    text-align: center;
    float: right;
+   margin-top: 1%;
 }
 
 .sunny_heat:hover{
@@ -159,11 +190,10 @@ label{
 
 
 .chartLine{
-  margin-top: 1%;
-  width: 100%;
+  width: 50%;
   opacity: 0.9;
   margin-left: 1%;
-  height: 100%;
+  height: 110%;
   border: 1px solid #c1bcbc;
 }
 
@@ -196,10 +226,33 @@ border-radius: 10px;
 .actions{
   border: 1px solid rgb(190, 186, 186);
   border-radius: 5px;
+  height: 40%;
+  overflow: auto;
+}
 
+.actions-title{
+  margin: 0;
+  padding-top: 1%;
+  border-bottom: 1px solid #a7a7a7;
+  text-align: center;
+}
+
+.actions-info{
+  display: inline-flex;
+  gap: 30px
 }
 
 .canvas-range-chart{
-  width: 80%;
+  width: 50%;
 }
 
+.developed{
+  height: 3%;
+  width: 95%;
+  font-size: 1.1rem;
+  text-align: end;
+  margin-top: 1%;
+}
+.voxar{
+  color:#3db5e7;
+}

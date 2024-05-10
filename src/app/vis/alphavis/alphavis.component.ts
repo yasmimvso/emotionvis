@@ -10,6 +10,7 @@ import { SlideValueService  } from '../../services/slide-value.service'
 import { Data }  from '../../shared/functions/interface'
 import * as d3 from 'd3';
 
+
 @Component({
   selector: 'app-alphavis',
   templateUrl: './alphavis.component.html',
@@ -36,7 +37,6 @@ export class AlphavisComponent implements OnInit{
 
   isPlaying: boolean = false;
 
-  vis: boolean = false;
   widthImg: any;
   heightImg:any;
   intervalId: any;
@@ -46,6 +46,8 @@ export class AlphavisComponent implements OnInit{
   dadosRs: Data[] = [];
   dadosGt: Data[] = [];
   data: Data[] = [];
+
+  inalphaVis : boolean = false;
 
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){}
@@ -60,9 +62,20 @@ export class AlphavisComponent implements OnInit{
   }
 
   atualizarImagem() {
-    let result: any = this.slidVal.getSliderValue();
-    if(result[0] && !this.sliderValue) this.sliderValue = result[0];
+
+    let result: any = this.slidVal.getSliderValue(); // result está com o resultado da cache
+
+
+    if(this.sliderValue < result[0] && this.inalphaVis){
+      this.sliderValue = this.sliderValue;
+    }
+    else if(result[0] && !this.sliderValue) {
+      this.sliderValue = result[0];
+      this.inalphaVis = true
+    }
+
     this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+
     this.plotCircle(this.data);
     this.plotChartLine(this.dadosRs, this.sliderValue);
   }

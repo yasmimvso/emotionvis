@@ -1,17 +1,5 @@
 
-
-.content-frame{
-  display: flex;
-  margin-top: 0.5%;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction:column;
-  width: 100%;
-  height: 100%;
-}
-
-.frames {
+.canvas-alphavis {
   display: flex;
   flex-direction: row;
   justify-content:space-between;
@@ -43,6 +31,14 @@
   display: flex;
   flex-direction: row;
 
+}
+
+.title-top{
+  font-size: 200%;
+  width: 80%;
+  margin: -1% 0% 2% 0%;
+  align-items: center;
+  text-align: center;
 }
 
 .checkbox-container {
@@ -92,6 +88,13 @@ h3{
   justify-content: space-between;
 }
 
+.span-title{
+  height: 3%;
+  display: flex;
+  flex-direction:row;
+  width: 60%;
+  margin-bottom: 2%;
+}
 .dataPlot{
   height: 90%;
   width: 20%;
@@ -101,18 +104,18 @@ h3{
   border: 0.2rem solid #a7a7a7;
 }
 
-.div-view{
+.board-view{
   width: 90%;
   height: 85%;
   position: relative;
 }
-.div-view img {
+.board-view img {
   width: 100%;
   height: 100%;
 
 }
 
-.div-view #chart-container{
+.board-view #chart-container{
   position: absolute;
   width: 100%;
   height: 100%;
@@ -146,11 +149,13 @@ h3{
 }
 
 .slider-container {
-  height: 4%;
+  height: 3%;
   width: 90%;
   display: flex;
   align-items: center;
   justify-content:space-evenly;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 
@@ -160,7 +165,7 @@ h3{
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 33%;
+  height: 39%;
   width: 87%;
   opacity: 0.9;
 }
@@ -189,7 +194,7 @@ transform-origin: 75px 75px;
 .developed{
   height: 3%;
   width: 95%;
-   font-size: 1.1rem;
-   text-align: start;
-   margin-top: 5%;
+  font-size: 1.1rem;
+  text-align: end;
+  margin-top: 3%;
 }

@@ -42,10 +42,11 @@ h2, p{
 .charts-data{
   display: flex;
   flex-direction: row;
-  height: 88%;
+  height: 85%;
   width: 95%;
   margin: auto;
   justify-content: space-between;
+  margin-bottom: 2%;
 }
 
 .img-plotBar{
@@ -98,9 +99,15 @@ img{
   text-align: center;
   margin: auto;
   align-items: center;
-  justify-content: center;
+  justify-content:space-between;
   display: inline-flex;
   flex-direction: row ;
+}
+.box-error{
+  height: 100%;
+  max-width: 20%;
+  display: inline-flex;
+  flex-direction: row;
 }
 .description-frames-erros{
   height: 15%;
@@ -110,7 +117,6 @@ img{
   justify-content:space-evenly;
   display: flex;
   flex-direction: raw;
-  border-bottom: 1px solid gray;
   background-color:  #3db5e7;
   opacity: 0.8;
 }
@@ -126,10 +132,10 @@ img{
   display: flex;
   flex-direction: column;
   text-align: center;
-  background-color: rgba(240, 235, 235, 0.807);
   background-color: #ffff;
   width: 90%;
   height: 40%;
+  margin-bottom: 2%;
 }
 .descFrame-list:hover{
   cursor: pointer;

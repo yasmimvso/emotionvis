@@ -1,6 +1,6 @@
 
 
-<app-tamplate [idVis]="vis"></app-tamplate>
+<app-tamplate></app-tamplate>
 <div class="show-case">
   <app-nav></app-nav>
   <div class="main-portion">
@@ -12,30 +12,31 @@
       <!-- <div class="separator"></div> -->
     </div>
     <div class="cases">
-      <div class="midia-vis mat-elevation-z2">
+      <div class="midia-vis">
         <a routerLink="/visData" style="text-decoration:none;">
           <div class="container-data">
             <img class="data-case" src= "../../../assets/img/analise-dados.jpeg">
-            <p class="texto">
-              <i class="material-icons v-middle">
-                timeline
-              </i>
-              Análise de Dados
-            </p>
           </div>
+
+          <p class="texto">
+            <i class="material-icons v-middle">
+              timeline
+            </i>
+            Análise de Dados
+          </p>
         </a>
       </div>
-      <div class="midia-vis mat-elevation-z2" >
+      <div class="midia-vis">
         <a routerLink="/alphavis" style="text-decoration:none;">
-          <div class="container-data">
-            <img src="../../../assets/img/gitHome.gif" class="midia-case">
-            <p class="texto">
-              <i class="material-icons v-middle">
-                art_track
-              </i>
-              AlphaVis
-            </p>
+          <div class="container-data-gif ">
+            <img class="gif" src= "../../../assets/img/gitHome.gif">
           </div>
+          <p class="texto">
+            <i class="material-icons v-middle">
+              art_track
+            </i>
+            Alphaction
+          </p>
         </a>
       </div>
     </div>

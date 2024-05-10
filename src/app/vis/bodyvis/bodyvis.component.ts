@@ -6,5 +6,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./bodyvis.component.css']
 })
 export class BodyvisComponent {
-  vis: boolean = false;
 }
