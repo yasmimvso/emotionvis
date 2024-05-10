@@ -1,9 +1,6 @@
 .footer{
-   /*display: flex;*/
    position: fixed;
-   /*justify-content: flex-start;*/
    height: 3vh;
-   background-color: #0c131f;
    color: white;
    bottom: 0;
    width: 100%;
@@ -13,12 +10,25 @@
   font-weight: 300;
   font-size: 1rem;
   right: 0px;
+  color: black;
 
 }
 
 .mat-toolbar.mat-toolbar-single-row{
   height: 3vh;
-  background-color: #0c131f;
 }
+
+.voxar{
+  color:#3db5e7;
+}
+
+.developed{
+  height: 3vh;
+  width: 95%;
+  font-size: 1.1rem;
+  text-align: end;
+  /* margin-top: 3%; */
+}
+
 
 

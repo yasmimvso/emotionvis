@@ -37,7 +37,6 @@ export class AlphavisComponent implements OnInit{
 
   isPlaying: boolean = false;
 
-  vis: boolean = false;
   widthImg: any;
   heightImg:any;
   intervalId: any;
@@ -74,8 +73,6 @@ export class AlphavisComponent implements OnInit{
       this.sliderValue = result[0];
       this.inalphaVis = true
     }
-
-    // if(!this.inalphaVis)this.inalphaVis = true
 
     this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
 

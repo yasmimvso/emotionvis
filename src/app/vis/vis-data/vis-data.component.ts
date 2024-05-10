@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener} from '@angular/core';
 import { FrameService } from '../../services/alphaframe.service'
 import { GroundingService } from '../../services/grounding.service'
 import { CATEGORIES  } from '../../shared/functions/alphavis.categories'
@@ -43,7 +43,12 @@ export class VisDataComponent implements OnInit{
 
   resultIou: Data[] = []
   filter: any = [];
-  id: boolean = false;
+
+  @HostListener('window:load', ['$event'])
+  onLoad() {
+    this.calcQtdByAction();
+    this.calcErroByAction(this.resultIou);
+  }
 
   ngOnInit(): void {
     this.loadInfo();
@@ -55,7 +60,6 @@ export class VisDataComponent implements OnInit{
 
   changeImg(frame:any){
       this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${frame}`
-
       this.frame = infoCard(this.resultIou, frame)
       this.callInfoByFrame(this.resultIou,this.img.nativeElement.clientWidth, this.img.nativeElement.clientHeight, frame);
   }
@@ -77,40 +81,6 @@ export class VisDataComponent implements OnInit{
 
       qtdByAcion.push(object);
     })
-
-  //   let arrayObject : any = []
-
-  //   qtdByAcion.forEach((item:any)=>{
-
-  //     let data : any  = {x: item[0], value: item[1],
-  //       normal:  {
-  //         fill: "#3db5e7",
-  //         hatchFill: "percent50",
-  //         fontColor: "#000000"
-  //       },
-  //       hovered: {
-  //         fill: "#3db5e7",
-  //         hatchFill: "percent50",
-  //         outline: {
-  //           enabled: true,
-  //           width: 6,
-  //           fill: "#404040",
-  //           stroke: null
-  //         },
-  //         fontColor: "#000000"
-  //       },
-  //       selected: {
-  //         outline: {
-  //           enabled: true,
-  //           width: 6,
-  //           fill: "#404040",
-  //           stroke: null
-  //         },
-  //         fontColor: "#000000"
-  //       }
-  //   }
-  //   arrayObject.push(data)
-  // })
 
   this.creatPieChart(qtdByAcion)
   }
@@ -157,7 +127,10 @@ export class VisDataComponent implements OnInit{
     width = this.chartBar.nativeElement.clientWidth - margin.left - margin.right,
     height =  this.chartBar.nativeElement.clientHeight - margin.top - margin.bottom;
 
-    let svg = d3.select("#containerBar")
+    let chartContainer = d3.select("#containerBar")
+    chartContainer.selectAll('*').remove();
+
+    let svg = chartContainer
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -214,16 +187,15 @@ export class VisDataComponent implements OnInit{
   }
 
   creatPieChart(dados:Dados[]){
-    // let Piechart = anychart.pie(data);
-    // Piechart.title('Errros (%) por ação')
-    // Piechart.container('container-pie');
-    // Piechart.draw();
 
     let margin = {top: 30, right: 30, bottom: 30, left: 70},
     width = this.chartBar.nativeElement.clientWidth - margin.left - margin.right,
     height =  this.chartBar.nativeElement.clientHeight - margin.top - margin.bottom;
 
-    let svg = d3.select("#containerPie")
+    let chartContainer = d3.select("#containerPie")
+    chartContainer.selectAll('*').remove();
+
+    let svg = chartContainer
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)

@@ -31,9 +31,6 @@ export class AlphavisIdComponent {
   isPlaying: boolean = false;
   xhttp: number = 0;
   opacityRange: number = 0.46;
-  heatmapColorAlter: string [] = ['rgba(240, 235, 235, 0.807)', 'white'];
-  heatmapBackgroundColor : string = "white";
-  flagAlter: boolean = true;
   sunnydisplay : boolean = false;
 
   dataSet: Canva[] = [];
@@ -51,7 +48,8 @@ export class AlphavisIdComponent {
   paragrafos: any = [];
   filterSelect : any = [];
   dadosHeatMap: any = [];
-  vis: boolean = true;
+  heatmapStatus : String = "HM ON";
+
 
 constructor(private router: Router, private location: Location) {
 
@@ -117,7 +115,7 @@ ngAfterViewInit() {
 
       this.filter.push(res);
     })
-    
+
    this.plotRec();
    this.atualizaParagrafo();
    this.PlotdataSet(dadosById);
@@ -386,10 +384,12 @@ changeVisibility():void{
   if(!this.sunnydisplay){
     result.setAttribute('style', 'visibility: visible');
     this.sunnydisplay = !this.sunnydisplay;
+    this.heatmapStatus = "HM OFF";
   }
   else {
     result.setAttribute('style', 'visibility: hidden');
     this.sunnydisplay = !this.sunnydisplay;
+    this.heatmapStatus = "HM ON";
   }
 
 }

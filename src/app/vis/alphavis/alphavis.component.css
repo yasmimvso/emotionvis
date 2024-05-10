@@ -33,6 +33,14 @@
 
 }
 
+.title-top{
+  font-size: 200%;
+  width: 80%;
+  margin: -1% 0% 2% 0%;
+  align-items: center;
+  text-align: center;
+}
+
 .checkbox-container {
   height: 10%;
   width: 100%;
@@ -157,7 +165,7 @@ h3{
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 33%;
+  height: 39%;
   width: 87%;
   opacity: 0.9;
 }
