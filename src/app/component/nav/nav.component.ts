@@ -1,4 +1,4 @@
-import { Component,  ElementRef, ViewChild } from '@angular/core';
+import { Component,  ElementRef, ViewChild, OnInit } from '@angular/core';
 import { HeaderService } from '../../services/header.service'
 
 @Component({
@@ -6,17 +6,16 @@ import { HeaderService } from '../../services/header.service'
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
-export class NavComponent {
+export class NavComponent implements OnInit {
   @ViewChild('containerNav') containerNav!: ElementRef;
 
   displayNav: boolean = true;
 
   constructor(private navService: HeaderService) {
-    // Inscrito para receber alterações em displayNav
+
     this.navService.displayNav$.subscribe(value => {
       this.displayNav = value;
 
-      // ver melhor isso
       if (this.containerNav) {
         const navElement = this.containerNav.nativeElement as HTMLElement;
         navElement.style.opacity = this.displayNav ? '1' : '0';
@@ -25,7 +24,12 @@ export class NavComponent {
 
     });
 
+  }
+  ngOnInit(): void {
 
   }
+
+ 
+
 
 }

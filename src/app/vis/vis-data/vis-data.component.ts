@@ -51,6 +51,22 @@ export class VisDataComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    const reloadedRecently = sessionStorage.getItem('reloadedRecently');
+    if (!reloadedRecently) {
+      this.load();
+      sessionStorage.setItem('reloadedRecently', 'true');
+    } else {
+      sessionStorage.removeItem('reloadedRecently');
+    }
+    this.loadInfo();
+  }
+
+  load() {
+    window.location.reload();
+  }
+
+
+  ngAfterViewInit():void{
     this.loadInfo();
   }
 

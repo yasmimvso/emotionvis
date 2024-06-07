@@ -7,59 +7,71 @@
         <a class="back-content" routerLink="/alphavis">
           <img src="../../../assets/img/seta1.png" class="back">
         </a>
-        <h2 class="title">EmotionVIS / Detecção de Ações Individuais</h2>
+        <h2 class="title">Alphavis/ Visualização de detecções individuais</h2>
       </div>
         <div class="view mat-elevation-z4">
-          <div class="checkbox mat-elevation-z3">
-            <h3 style="padding: 8px; border-bottom: 1px solid #a7a7a7; text-align: center;">Filtro por ação</h3>
-                 <ng-container class="filters"  *ngFor="let trd of filter">
-                    <div class="checkbox-container">
-                      <input type="checkbox" [name]="trd.label" [checked]="trd.selected" [disabled]="trd.disabled" (change)="changeByFilter($event)">
-                      <label style="font-size: 1.2rem;">{{ trd.label }}</label>
-                    </div>
-                 </ng-container>
-          </div>
-          <div style="display: flex; flex-direction: column; height: 100%; width: 60%; padding: 1%;">
-            <div class="video mat-elevation-z4" style="width: 100%; height: 87%; margin-bottom: 1%;" #imgView>
-              <img  class= "img" [src]="imagemUrl" alt="imagem.jpg">
-              <div #heatmap id="heatmap" class="heatmapImg" ></div>
-              <div id="chart-container" ></div>
+           <div style="width: 60%; height: 5%; display:flex;flex-direction: row; justify-content: start;">
+            <i class="material-icons v-middle" style="color: green; font-size: 13px;">
+              radio_button_checked
+            </i>
+            <p style="margin-right: 3%;">Correto</p>
+            <i  class="material-icons v-middle"style="color: red; font-size: 13px;">
+              radio_button_checked
+            </i>
+            <p style="margin-right: 5%; display: flex; flex-direction: row;">Errado</p>
+          </div >
+
+          <div class="view-main">
+            <div class="checkbox mat-elevation-z3">
+              <h3 style="padding: 8px; border-bottom: 1px solid #a7a7a7; text-align: center;">Filtro por ação</h3>
+                   <ng-container class="filters"  *ngFor="let trd of filter">
+                      <div class="checkbox-container">
+                        <input type="checkbox" [name]="trd.label" [checked]="trd.selected" [disabled]="trd.disabled" (change)="changeByFilter($event)">
+                        <label style="font-size: 1.2rem;">{{ trd.label }}</label>
+                      </div>
+                   </ng-container>
             </div>
-
-            <div class="slider-container">
-              <button class="play-button" (click)="togglePlay()">
-                  <i class="material-icons v-middle">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
-              </button>
-              <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
-                  [step]="stepValue"  (input)="atualizarImagem()"/>
-              <a class="sunny_heat" (click)="changeVisibility()" matTooltip="Heat Map: Área de concentração espacial individual" matTooltipClass="'example-tooltip-uppercase'">
-                <!-- <i class="material-icons" style="font-size: 2rem; ">
-                  sunny
-                </i> -->
-                {{"["+ " " + heatmapStatus + " " + "]"}}
-              </a>
-           </div>
-          </div>
-          <div class="person-data">
-            <div class="actions mat-elevation-z3">
-              <h3 class="actions-title">Ações no tempo</h3>
-              <section class="actions-info">
-                  <p style="margin-left: 20px;">Frame: {{sliderValue}}</p>
-                  <p>id {{idP}}</p>
-              </section>
-              <div class="plotInf">
-                <img style="margin-right: 1%; width: 8%; height: 3%;" *ngFor="let paragrafo of paragrafos" [src]="'../../../assets/img/img' + paragrafo.img + '.png'" alt="acoes" [matTooltip]="'ação: ' + paragrafo.categorie + '/' + 'total: ' + paragrafo.quantideCat" matTooltipClass="example-tooltip-uppercase">
+            <div style="display: flex; flex-direction: column; height: 100%; width: 60%; padding: 1%;">
+              <div class="video mat-elevation-z4" style="width: 100%; height: 87%; margin-bottom: 1%;" #imgView>
+                <img  class= "img" [src]="imagemUrl" alt="imagem.jpg">
+                <div #heatmap id="heatmap" class="heatmapImg" ></div>
+                <div id="chart-container" ></div>
               </div>
-          </div>
-            <div  class="bar-chart mat-elevation-z3" #barCharts>
-              <canvasjs-chart [options]="chartInfo" style="height: 100%; width: 100%;"></canvasjs-chart>
 
+              <div class="slider-container">
+                <button class="play-button" (click)="togglePlay()">
+                    <i class="material-icons v-middle">{{ isPlaying ? 'pause' : 'play_arrow' }}</i>
+                </button>
+                <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
+                    [step]="stepValue"  (input)="atualizarImagem()"/>
+                <a class="sunny_heat" (click)="changeVisibility()" matTooltip="Heat Map: Área de concentração espacial individual" matTooltipClass="'example-tooltip-uppercase'">
+                  <button class="heatmap-button mat-elevation-z3"><h4 style="color: black;">Heatmap</h4></button>
+                </a>
+             </div>
+            </div>
+            <div class="person-data">
+              <div class="actions mat-elevation-z3">
+                <h3 class="actions-title">Ações decorrentes no tempo</h3>
+                <section class="actions-info">
+                    <p style="margin-left: 20px;">Frame: {{sliderValue}}</p>
+                    <p>id {{idP}}</p>
+                </section>
+                <div class="plotInf">
+                  <img style="margin-right: 1%; width: 8%; height: 3%;" *ngFor="let paragrafo of paragrafos" [src]="'../../../assets/img/img' + paragrafo.img + '.png'" alt="acoes" [matTooltip]="'ação: ' + paragrafo.categorie + '/' + 'total: ' + paragrafo.quantideCat" matTooltipClass="example-tooltip-uppercase">
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div class="lineCharts mat-elevation-z3">
-          <div class="chartLine mat-elevation-z4" #chartLine>
-            <canvasjs-chart  [options]="chartOptions" class="canvas-range-chart"></canvasjs-chart>
+          <h2 style="margin-bottom: 0.5%;">Dados totais individuais sumarizados</h2>
+          <div style="width: 100%; height: 90%; display: flex; flex-direction: row; justify-content: space-around;">
+            <div class="chartLine mat-elevation-z4" #chartLine>
+              <canvasjs-chart  [options]="chartOptions" class="canvas-range-chart"></canvasjs-chart>
+            </div>
+            <div  id ="barchart" class="bar-chart mat-elevation-z3" #barCharts>
+              <h3 style="text-align: center;">Porcentagens de predições certas e erradas por ação</h3>
+            </div>
           </div>
         </div>
     </div>

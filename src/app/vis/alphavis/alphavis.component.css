@@ -4,13 +4,12 @@
   flex-direction: row;
   justify-content:space-between;
   width: 80%;
-  height: 46%;
+  height: 52%;
   border-radius: 1rem;
   border: 0.2rem solid #a7a7a7;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   background-color: rgba(240, 235, 235, 0.807);
   padding-left: 2%;
-  margin-top: 1%;
 }
 
 .checkbox{
@@ -34,6 +33,7 @@
 }
 
 .title-top{
+  padding-top: 2%;
   font-size: 200%;
   width: 80%;
   margin: -1% 0% 2% 0%;
@@ -89,10 +89,10 @@ h3{
 }
 
 .span-title{
-  height: 3%;
+  height: 5%;
   display: flex;
   flex-direction:row;
-  width: 60%;
+  width: 90%;
   margin-bottom: 2%;
 }
 .dataPlot{
@@ -121,11 +121,7 @@ h3{
   height: 100%;
   top:0;
   left: 0;
-
-  background-color: #67686b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  opacity: 0.9;
 }
 
 .plotLine-content{
@@ -197,4 +193,28 @@ transform-origin: 75px 75px;
   font-size: 1.1rem;
   text-align: end;
   margin-top: 3%;
+}
+
+.instruction-click{
+   min-width: 50%;
+   display: flex;
+   flex-direction: row;
+   justify-content: left;
+}
+
+.instruction-button{
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+}
+
+.heatmapImg{
+  /* visibility: hidden; */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top:0;
+  left: 0;
+  opacity: 0.7;
 }
