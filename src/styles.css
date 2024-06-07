@@ -20,6 +20,10 @@ body {
   color: #686767;
 
  }
+
+ p{
+  font-size : 1.2rem;
+}
    /* font-size: 1vmin; */
 
 .v-middle{

@@ -1,11 +1,11 @@
 import { Component,  OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Router,  ActivatedRoute,  NavigationExtras} from '@angular/router';
+import { Router,  NavigationExtras} from '@angular/router';
 import { Location } from '@angular/common';
 import { calcPoint } from '../../shared/functions/alphavis.points';
 import { CATEGORIES } from '../../shared/functions/alphavis.categories';
 import { Data, Canva}  from '../../shared/functions/interface'
 import * as d3 from 'd3';
-import { contourDensity } from "d3-contour";
+import { heatMap } from 'src/app/shared/functions/heatmap';
 
 @Component({
   selector: 'app-alphavis-id',
@@ -30,7 +30,7 @@ export class AlphavisIdComponent {
   stepValue: number = 5;
   isPlaying: boolean = false;
   xhttp: number = 0;
-  opacityRange: number = 0.46;
+  opacityRange: number = 0.43;
   sunnydisplay : boolean = false;
 
   dataSet: Canva[] = [];
@@ -48,7 +48,6 @@ export class AlphavisIdComponent {
   paragrafos: any = [];
   filterSelect : any = [];
   dadosHeatMap: any = [];
-  heatmapStatus : String = "HM ON";
 
 
 constructor(private router: Router, private location: Location) {
@@ -111,17 +110,21 @@ ngAfterViewInit() {
 
     valoresDistintos.forEach((d)=>{
       if(d == CATEGORIES[this.state.classId])  res = {label: d, selected: true, disabled: false}
-      else res = {label: d, selected: false, disabled: true}
+      else res = {label: d, selected: false, disabled: false}
 
       this.filter.push(res);
     })
+
+    let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id && d.valid == false);
+    let width = this.heatmapInf.nativeElement.clientWidth;
+    let height = this.heatmapInf.nativeElement.clientHeight;
 
    this.plotRec();
    this.atualizaParagrafo();
    this.PlotdataSet(dadosById);
    this.ChartLine();
    this.percInf(dadosById);
-   this.heatMap();
+   heatMap(dados, width, height);
 }
 
 
@@ -179,67 +182,78 @@ changeByFilter(event:any){
 
 
 public percInf(result: Data[]){
+  let action = [...new Set(result.map((item) => item.class))];
 
-   let action = [... new Set(result.map((item:any)=>item.class))];
+  let data = Array();
+  let i = 0;
 
-   let data_certo = Array();
-   let data_error = Array();
-   let i=0;
-   action.forEach((act:any)=>{
-
-
-      let valid = result.filter((d:any)=>{
-        return (d.class == act) && d.valid === true;
-      })
-      let invalid = result.filter((d:any)=>{
-        return (d.class == act) && d.valid === false;
-      })
+  // função para calcular quantidades de erros e acertos por ação
+  action.forEach((act) => {
+      let valid = result.filter((d) => (d.class === act) && d.valid === true);
+      let invalid = result.filter((d) => (d.class === act) && d.valid === false);
 
       i++;
       let soma = valid.length + invalid.length;
 
-      let aux = {label: CATEGORIES[act], y: (valid.length)/soma, color: "#3db5e7", x:i};
-      let aux1 = {label: CATEGORIES[act], y: (invalid.length)/soma,color: "rgb(190, 186, 186)", x:i};
+      let value = {
+          label: CATEGORIES[act],
+          acerto: valid.length / soma,
+          erro: invalid.length / soma
+      };
+      data.push(value);
+  });
 
-      data_certo.push(aux);
-      data_error.push(aux1);
-   })
+  const margin = { top: 30, right: 10, bottom: 20, left: 100 };
+  const width = (this.barCharts.nativeElement.clientWidth - margin.left - margin.right)/1.3 ;
+  const height = (this.barCharts.nativeElement.clientHeight - margin.top - margin.bottom)/1.3 ;
 
-    const width =  this.barCharts.nativeElement.clientWidth;
-    const height =  this.barCharts.nativeElement.clientHeight;
+  const svg = d3.select('#barchart')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-          this.chartInfo = {
-            interactivityEnabled: true,
-            width: width,
-            height: height,
-            animationEnabled: true,
-            theme: "light2",
-            axisY:{
-              gridThickness: 0
-            },
-            axisX: {
-              title: "Métricas ações(%)",
-              gridThickness: 0,
-              lineThickness: 0,
-              tickThickness: 0
+  const tipo = Object.keys(data[0]).filter(d => d != "label");
+  const actions = data.map(d => d.label);
 
-            },
-            data: [{
-              type: "stackedBar",
-              showInLegend: true,
-              yValueFormatString: "#0.#%",
-              legendText: "correto",
-              color: "#3db5e7",
-              dataPoints: data_certo
-            },{
-              type: "stackedBar",
-              showInLegend: true,
-              yValueFormatString: "#0.#%",
-              legendText: "errado",
-              color: "rgb(190, 186, 186)",
-              dataPoints: data_error
-            }]
-          }
+  const stackedData = d3.stack()
+      .keys(tipo)(data);
+
+  const x = d3.scaleLinear()
+      .domain([0, 1]).nice()
+      .range([0, width]);
+
+  const y = d3.scaleBand()
+      .domain(actions)
+      .range([0, height])
+      .padding(0.25);
+
+  const xAxis = d3.axisBottom(x).ticks(5, '~s');
+  const yAxis = d3.axisLeft(y);
+
+  svg.append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(xAxis)
+      .call(g => g.select('.domain').remove());
+
+  svg.append("g")
+      .call(yAxis)
+      .call(g => g.select('.domain').remove());
+
+  const layers = svg.append('g')
+      .selectAll('g')
+      .data(stackedData)
+      .join('g')
+      .attr('fill', d => d.key === "erro" ? "red" : "green");
+
+  layers.selectAll('rect')
+      .data(d => d)
+      .join('rect')
+      .attr('x', d => x(d[0]))
+      .attr('y', (d:any) => y(d.data['label'])!)
+      .attr('height', y.bandwidth())
+      .attr('width', d => x(d[1]) - x(d[0]));
 }
 
 PlotdataSet(id:Data[]){
@@ -353,15 +367,36 @@ plotRec(): void{
             .attr("y", (d: any) => d.y - (d.height/2))
             .attr("width", (d: any) => d.width)
             .attr("height",(d: any) => d.height)
-            .attr("stroke", (d: any)=> d.valid == true ?"green": "red")
+            .attr("stroke", (d: any)=> "white")
             .attr("fill", 'none');
+           
+          // se d.height * 2 >= height = colocar menor a largura
+          // caso contrário, coloca maior a altura
+           rect.append("rect")
+            .attr("x", (d: any) => d.x - d.width/1.5)
+            .attr("y", (d: any) => {
+              if(d.height * 2.5 >= heightImg) return d.y - d.height/1.2;
+              else return d.y - d.height/1.1;
+            })
+            .attr("width", (d: any) => d.width/0.75)
+            .attr("height",(d: any) => {
+              if(d.height * 2.5 >= heightImg) return d.height / 3;
+              else return d.height / 2;
+            })
+            .attr("stroke", (d: any)=> "white")
+            .attr("fill", "white");
 
           rect.append("text")
-            .attr("x", (d: any) =>d.x - (d.width/2) + 15)
+            .attr("x", (d: any) =>d.x * 1.1)
             .attr("y", (d: any) =>  d.y - (d.height/2) - 5 + (i-=8))
             .attr("text-anchor", "end")
             .attr("dominant-baseline", "middle")
-            .attr("fill", (d: any)=> d.valid == true ? "green": "red")
+            .attr("fill", "black")
+            .attr("font-weight", "bold")
+            .attr("font-size", "1.4rem")
+            .attr("stroke",  (d: any)=> d.valid == true ? "green": "red")
+            .attr("stroke-width", 0.5)
+            .attr("font-size", "1.4rem")
             .text((d:any)=>CATEGORIES[d.class]);
 
     }
@@ -384,74 +419,12 @@ changeVisibility():void{
   if(!this.sunnydisplay){
     result.setAttribute('style', 'visibility: visible');
     this.sunnydisplay = !this.sunnydisplay;
-    this.heatmapStatus = "HM OFF";
   }
   else {
     result.setAttribute('style', 'visibility: hidden');
     this.sunnydisplay = !this.sunnydisplay;
-    this.heatmapStatus = "HM ON";
   }
 
-}
-
-heatMap():void{
-
-    var margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = this.heatmapInf.nativeElement.clientWidth - margin.left - margin.right,
-    height = this.heatmapInf.nativeElement.clientHeight - margin.top - margin.bottom;
-
-    var svg = d3.select("#heatmap")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      const color = d3.scaleSequential(d3.interpolateBlues)
-      .domain([-0.1, 0.75]);
-
-      let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id);
-      dados.forEach((d:any)=>{
-
-        let result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2,this.heatmapInf.nativeElement.clientWidth, this.heatmapInf.nativeElement.clientHeight);
-        if(result){
-          let object = {x: result[0], y:result[1]};
-          this.dadosHeatMap.push(object);
-        }
-      });
-
-        var x = d3.scaleLinear()
-        .domain([0, this.heatmapInf.nativeElement.clientWidth]).nice()
-        .range([0, this.heatmapInf.nativeElement.clientWidth]);
-
-        var y = d3.scaleLinear()
-        .domain([0, this.heatmapInf.nativeElement.clientHeight]).nice()
-        .range([0, this.heatmapInf.nativeElement.clientHeight]);
-
-        var densityData = contourDensity()
-        .x((d:any) => x(d.x))
-        .y((d:any) => y(d.y))
-        .size([800, 90]) // esse é o size da dimensão da densidade
-        .bandwidth(20)
-        .thresholds(30)
-        (this.dadosHeatMap);
-
-        svg.selectAll("path")
-        .data(densityData)
-        .enter()
-        .append("path")
-        .attr("d", d3.geoPath())
-        .attr("fill", "none")
-        .attr("stroke", "#84c0e9");
-
-
-        svg.insert("g", "g")
-        .selectAll("path")
-        .data(densityData)
-        .enter()
-        .append("path")
-        .attr("d", d3.geoPath())
-        .attr("fill", function(d) { return color(d.value ); })
 }
 
 atualizaParagrafo():void{
@@ -491,7 +464,7 @@ public ChartLine(){
     },
     options: {
       legend: {
-         display: false
+         display: true
       },
     },
 		axisX: {

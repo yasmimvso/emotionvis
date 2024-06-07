@@ -8,6 +8,7 @@ import { calcPoint } from '../../shared/functions/alphavis.points';
 import { Router,  NavigationExtras } from '@angular/router';
 import { SlideValueService  } from '../../services/slide-value.service'
 import { Data }  from '../../shared/functions/interface'
+import { heatMap} from '../../shared/functions/heatmap'
 import * as d3 from 'd3';
 
 
@@ -22,13 +23,14 @@ export class AlphavisComponent implements OnInit{
   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
   @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
   @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
+  @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
 
   filter = [
   {label: 'All', selected: true, disable: false}
   ];
 
   heightLinePlot: number = 0;
-  opacityRange: number = 0.46;
+  opacityRange: number = 0.22;
   sliderValue: number = 0;
   minValue: number = 0;
   maxValue: number = 1800;
@@ -52,18 +54,18 @@ export class AlphavisComponent implements OnInit{
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){}
 
-  @HostListener('window:load', ['$event'])
-  onLoad() {
-    this.sliderValue = 0;
-    localStorage.setItem("sliderValue", "0");
-    this.plotChartLine(this.dadosRs, this.sliderValue);
-    this.atualizarImagem();
-    this.plotCircle(this.data);
-  }
+  // @HostListener('window:load', ['$event'])
+  // onLoad() {
+  //   this.sliderValue = 0;
+  //   localStorage.setItem("sliderValue", "0");
+  //   // this.plotChartLine(this.data, this.sliderValue);
+  //   // this.atualizarImagem();
+  //   // this.plotCircle(this.data);
+  // }
 
   atualizarImagem() {
 
-    let result: any = this.slidVal.getSliderValue(); // result está com o resultado da cache
+    let result: any = this.slidVal.getSliderValue();
 
 
     if(this.sliderValue < result[0] && this.inalphaVis){
@@ -74,10 +76,10 @@ export class AlphavisComponent implements OnInit{
       this.inalphaVis = true
     }
 
-    this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+    this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`; // dado que o valor vai de 32 a 1800
 
     this.plotCircle(this.data);
-    this.plotChartLine(this.dadosRs, this.sliderValue);
+    this.plotChartLine(this.data, this.sliderValue);
   }
 
   changeByFilter(event:any){
@@ -135,16 +137,38 @@ export class AlphavisComponent implements OnInit{
       }
 
       this.plotCircle(this.data);
-      this.plotChartLine(this.dadosRs, this.sliderValue);
+      this.plotChartLine(this.data, this.sliderValue);
+
+      let width = this.heatmapInf.nativeElement.clientWidth;
+      let height = this.heatmapInf.nativeElement.clientHeight;
+
+      let dadosFilter = this.filter.filter((item)=> item.selected == true)
+      let label = [...new Set(dadosFilter.map((item:any) => item.label))];
+
+
+      if(label.length > 0 && !label.includes("All")){
+        let dadosChecked = this.data.filter((item:Data)=> label.includes(CATEGORIES[item.class]))
+
+        heatMap(dadosChecked, width, height);
+      }
+      else {
+        heatMap(this.data, width, height);
+      }
   }
 
 
   ngOnInit(): void{
 
-    window.addEventListener("resize", () => {
-      this.chartQtd(this.dadosRs);
-      this.plotChartLine(this.dadosRs, this.sliderValue);
-    });
+    const reloadedRecently = sessionStorage.getItem('reloadedRecently');
+    if (!reloadedRecently) {
+      this.load();
+      sessionStorage.setItem('reloadedRecently', 'true');
+    } else {
+      sessionStorage.removeItem('reloadedRecently');
+    }
+
+
+    this.isPlaying = false;
 
     this.atualizarImagem();
 
@@ -158,7 +182,17 @@ export class AlphavisComponent implements OnInit{
       this.dadosGt = dadosGt;
       this.callIou();
     })
+
+    window.addEventListener("resize", () => {
+      this.chartQtd(this.dadosRs);
+      this.plotChartLine(this.data, this.sliderValue);
+    });
   }
+
+  load() {
+    window.location.reload();
+  }
+
 
   selecItems(dadosRs:any){
 
@@ -256,7 +290,12 @@ export class AlphavisComponent implements OnInit{
                     if(d.person_id === undefined) return "#ccc";
                     else if(d.valid === true) return "green";
                     else return "red";
-                  });
+                  })
+                  .append("text")
+                  .text((d:any)=> {
+                    if(d.person_id === undefined) return 'Pessoa não identificada';
+                    else return `Id: ${d.person_id? d.person_id: "S/I"} | Ação: ${CATEGORIES[d.class]}`
+                  })
 
                   var tooltip = d3.select("body")
                   .append("div")
@@ -358,7 +397,7 @@ export class AlphavisComponent implements OnInit{
         .attr("height", height + margin.top + margin.bottom)
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    let classCounts: Record< number, { count: number; image: string }> = {};
+    let classCounts: Record< number, { count: number; image: string}> = {};
 
     data.forEach((item: any) => {
 
@@ -372,7 +411,7 @@ export class AlphavisComponent implements OnInit{
       }
     });
 
-    const finalData = Object.entries(classCounts).map(([className, { count, image }]) => ({
+    const finalData = Object.entries(classCounts).map(([className, { count, image}]) => ({
       class: CATEGORIES[parseInt(className)],
       count: count,
       image: image,
@@ -384,13 +423,16 @@ export class AlphavisComponent implements OnInit{
     const tooltip = d3.select("#dataPlot")
       .append("div")
       .attr("class", "tooltip")
-      .style("background-color", " rgba(240, 235, 235, 0.807)")
-      .style("width","7%")
-      .style("height","6%")
-      .style("border" , "1")
-      .style("position", "absolute")
-      .style("z-index", "1")
-      .style("opacity", 0);
+    // const tooltip = d3.select("#dataPlot")
+    //   .append("div")
+    //   .attr("class", "tooltip")
+    //   .style("background-color", " rgba(240, 235, 235, 0.807)")
+    //   .style("width","7%")
+    //   .style("height","6%")
+    //   .style("border" , "1")
+    //   .style("position", "absolute")
+    //   .style("z-index", "1")
+    //   .style("opacity", 0);
 
     svg
       .selectAll(".bar")
@@ -402,19 +444,19 @@ export class AlphavisComponent implements OnInit{
       .attr("width", (d:any) => x(d.count) * 0.8 )
       .attr("x", 0)
       .attr("y", (d:any) => y(d.class)!)
-      .attr("fill", "#3498db")
-      .on("mouseover", (i:any, d:any)=>{
-        tooltip.transition()
-        .duration(200)
-        .style("opacity", 0.9)
-        .style("cursor", "default");
-        tooltip.html(`${d.class} \n$${d.count}`)
-        .style("left", (i.pageX) + "px")
-        .style("top", (i.pageY) + "px");
-      })
-      .on("mouseout", function () {
-        tooltip.transition().duration(500).style("opacity", 0);
-      });
+      .attr("fill", "#3498db");
+      // .on("mouseover", (i:any, d:any)=>{
+      //   tooltip.transition()
+      //   .duration(200)
+      //   .style("opacity", 0.9)
+      //   .style("cursor", "default");
+      //   tooltip.html(`${d.class} \n$${d.count}`)
+      //   .style("left", (i.pageX) + "px")
+      //   .style("top", (i.pageY) + "px");
+      // })
+      // .on("mouseout", function () {
+      //   tooltip.transition().duration(500).style("opacity", 0);
+      // });
 
     svg.selectAll("text")
       .data(finalData)
@@ -436,8 +478,14 @@ export class AlphavisComponent implements OnInit{
     .attr("xlink:href", (d:any) => d.image)
     .attr("x", (d:any) => x(d.count) * 0.8 + 5)
     .attr("y", (d:any) => y(d.class)!)
-    .attr("width", y.bandwidth());
+    .attr("width", y.bandwidth())
+    .append("title")
+    .text(function(d:any) {
+      return `${d.class}`;
+    });
     // .attr("height", y.bandwidth());
+
+
 
     svg.select(".domain").remove();
     svg.selectAll(".tick line").remove();
@@ -445,6 +493,7 @@ export class AlphavisComponent implements OnInit{
   }
 
 plotChartLine(data: Data[], currentFrame:any): void{
+
 
   const margin = { top: 20, right: 15, bottom: 50, left: 30 };
   let widthY = this.chartLine.nativeElement.clientWidth;
@@ -533,7 +582,7 @@ plotChartLine(data: Data[], currentFrame:any): void{
       svgY
         .append("path")
         .datum(finalData)
-        .attr("stroke", "#3498db")
+        .attr("stroke", "red")
         .attr("fill", "none")
         .attr("stroke-width", 2)
         .attr("d", line);
@@ -541,7 +590,7 @@ plotChartLine(data: Data[], currentFrame:any): void{
       svgY.append("path")
         .datum(finalData)
         .attr("class", "area")
-        .attr("fill", "#3498db")
+        .attr("fill", "red")
         .attr("fill-opacity", 0.4)
         .attr("d", area);
 
@@ -579,6 +628,8 @@ plotChartLine(data: Data[], currentFrame:any): void{
   togglePlay() {
 
     this.isPlaying = !this.isPlaying;
+
+    console.log("valor de player:", this.isPlaying);
 
     if (!this.isPlaying) {
 

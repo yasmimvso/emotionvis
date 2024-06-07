@@ -4,7 +4,7 @@
     <app-nav style="height: 95vh; background-color: #3db5e7; "></app-nav>
     <div class="content">
       <h2 class="title-top">
-        EmotionVIS / Alphaction
+        Alphavis
       </h2>
       <mat-card class="canvas-alphavis">
         <div class="checkbox mat-elevation-z3">
@@ -18,19 +18,25 @@
         </div>
         <div class="midia" >
           <div class="span-title">
-            <div style="width: 20%; display: flex; flex-direction: row;">
+
+            <div class="instruction-click">
+              <a matTooltip="Os pontos são clicáveis" matTooltipClass="example-tooltip-uppercase" style="cursor: default;">
+                <i class="material-icons" style="font-size: 1.7rem; color: black">touch_app</i>
+              </a>
+              <a matTooltip="Os pontos são clicáveis" matTooltipClass="example-tooltip-uppercase" style="cursor: default;">
+                <p>Clique nas predições para uma visualização individual</p>
+              </a>
+            </div>
+
+            <div class="instruction-button">
               <i class="material-icons v-middle" style="color: green; font-size: 13px;">
                 radio_button_checked
               </i>
-              <p>Correto</p>
-            </div>
-            <div style="width: 20%; display: flex; flex-direction: row;">
-              <i  class="material-icons v-middle"style="color: red; font-size: 13px;">
+              <p style="margin-right: 5%;">Correto</p>
+              <i  class="material-icons v-middle" style="color:red; font-size: 13px;">
                 radio_button_checked
               </i>
               <p style="margin-right: 5%; display: flex; flex-direction: row;">Errado</p>
-            </div>
-            <div style="width: 40%; display: flex; flex-direction: row;">
               <i  class="material-icons v-middle"style="color: gray; font-size: 13px;">
                 radio_button_checked
               </i>
@@ -39,7 +45,8 @@
           </div>
           <div class="board-view" >
             <img class="img" [src]="imagemUrl" alt="imagem.jpg"   #imgView>
-            <div id="chart-container"  [style.opacity]="opacityRange" ></div>
+            <div #heatmap id="heatmap" class="heatmapImg" ></div>
+            <div id="chart-container" ></div>
           </div>
           <div class="slider-container">
               <button class="play-button" (click)="togglePlay()">
@@ -56,11 +63,14 @@
       </mat-card>
       <div class="date" >
         <div  class="dataPlot  mat-elevation-z3" #dataPlot>
-          <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Quantidade de ações</h3>
+          <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Total de ações detectadas</h3>
           <div id="dataPlot"></div>
         </div>
         <div class ="lineCard mat-elevation-z3" class="plotLine-content" #chartLine>
-         <h3 >Relação de erros por frame</h3>
+          <div style="display: inline-flex; justify-content: center;">
+            <h3 style="color:red; font-weight: bold; margin-right: 0.5%;">Erros</h3>
+            <h3> de detecção de ação por Frames</h3>
+          </div>
          <svg id="plotLine" style="width:100%; height: 100%"></svg>
       </div>
       </div>

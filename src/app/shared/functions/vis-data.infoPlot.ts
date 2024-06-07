@@ -63,9 +63,13 @@ if(Drs.length>0){
 
         rect.append("text")
             .attr("x", (d: any) => d.x - (d.width / 2))
-            .attr("y", (d: any, i: number) => d.y - (d.height/2) - ( i * d.height * 0.15))
+            .attr("y", (d: any, i: number) => d.y - (d.height/2) - ( i * d.height * 0.25))
             .attr("text-anchor", "start")
-            .attr("fill", "red")
+            .attr("fill", "black")
+            .attr("font-weight", "bold")
+            .attr("font-size", "1.4rem")
+            .attr("stroke", "red")
+            .attr("stroke-width", 0.4) 
             .attr("font-size", "1.4rem")
             .text((d: any) => CATEGORIES[d.class]);
   }
