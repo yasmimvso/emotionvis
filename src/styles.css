@@ -122,3 +122,30 @@ body {
 .nave{
   height: 95vh; background-color: #3db5e7;
 }
+
+.view{
+  height: 40%;
+  width: 77%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(240, 235, 235, 0.807);
+  padding: 1%;
+  border: 0.2rem solid #a7a7a7;
+  border-radius: 1.2rem;
+  margin-top: 2%;
+}
+
+.dadosBygraph{
+  height: 36%;
+  width: 77%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  float: left;
+  background-color: rgba(240, 235, 235, 0.807);
+  padding: 1%;
+  border: 0.2rem solid #a7a7a7;
+  border-radius: 1.2rem;
+  margin-top: 0.5%;
+}
