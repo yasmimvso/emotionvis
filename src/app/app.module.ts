@@ -15,6 +15,7 @@ import { VisDataComponent } from './vis/vis-data/vis-data.component';
 import { TamplateComponent } from './component/tamplate/tamplate.component';
 import { FooterComponent } from './component/footer/footer.component';
 import { NavComponent } from './component/nav/nav.component'
+import { MidiaComponent} from './component/midia/midia.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatListModule } from '@angular/material/list';
@@ -22,8 +23,9 @@ import { MatCardModule} from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
-import { ChartComponent } from './component/chart/chart.component';
-import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+
+// // excluir quando terminar a substituição de
+// import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 
 
 @NgModule({
@@ -36,7 +38,7 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     AlphavisComponent,
     AlphavisIdComponent,
     VisDataComponent,
-    ChartComponent
+    MidiaComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +50,7 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     RoutingModule,
     FormsModule,
     HttpClientModule,
-    CanvasJSAngularChartsModule,
+    // CanvasJSAngularChartsModule,
     MatTooltipModule
   ],
   providers: [],

@@ -1,0 +1,34 @@
+.midia-vis{
+  height: 25vh;
+  width: 25vw;
+  opacity:0.85;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.container-data{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 90%;
+}
+
+.data-case{
+  border-radius: 5%;
+  margin-top: 6%;
+  width: 90%;
+  height: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+}
+
+.texto{
+  font-size: 1.3rem;
+  color: black;
+}
+
+.data-case:hover{
+  transform: scale(1.2);
+}
+

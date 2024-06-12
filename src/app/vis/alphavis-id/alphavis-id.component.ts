@@ -1,9 +1,9 @@
-import { Component,  OnInit, ViewChild, ElementRef} from '@angular/core';
-import { Router,  NavigationExtras} from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, NavigationExtras } from '@angular/router';
 import { Location } from '@angular/common';
 import { calcPoint } from '../../shared/functions/alphavis.points';
 import { CATEGORIES } from '../../shared/functions/alphavis.categories';
-import { Data, Canva}  from '../../shared/functions/interface'
+import { Data, Interval } from '../../shared/functions/interface'
 import * as d3 from 'd3';
 import { heatMap } from 'src/app/shared/functions/heatmap';
 
@@ -15,12 +15,12 @@ import { heatMap } from 'src/app/shared/functions/heatmap';
 export class AlphavisIdComponent {
 
   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
-  @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
-  @ViewChild('barCharts', {static: true}) private barCharts! : ElementRef;
-  @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
+  @ViewChild('imgView', { static: true }) private imgView!: ElementRef;
+  @ViewChild('barCharts', { static: true }) private barCharts!: ElementRef;
+  @ViewChild('heatmap', { static: true }) private heatmapInf!: ElementRef;
 
-  filter: any =[
-    {label: "All", selected: false, disabled: false}
+  filter: any = [
+    { label: "All", selected: false, disabled: false }
   ];
 
 
@@ -31,12 +31,12 @@ export class AlphavisIdComponent {
   isPlaying: boolean = false;
   xhttp: number = 0;
   opacityRange: number = 0.43;
-  sunnydisplay : boolean = false;
+  sunnydisplay: boolean = false;
 
-  dataSet: Canva[] = [];
+  dataSet: Interval[] = [];
 
   state: any;
-  idP : any;
+  idP: any;
   context: any;
   intervalId: any;
   imagemUrl: any;
@@ -46,11 +46,11 @@ export class AlphavisIdComponent {
   chartInfo: any = {}
 
   paragrafos: any = [];
-  filterSelect : any = [];
+  filterSelect: any = [];
   dadosHeatMap: any = [];
 
 
-constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location) {
 
     location.getState();
 
@@ -65,130 +65,130 @@ constructor(private router: Router, private location: Location) {
 
     this.idP = this.state.id;
     this.sliderValue = this.state.frame;
-    this. minValue = this.state.dados[0].frame_id;
+    this.minValue = this.state.dados[0].frame_id;
     // this.maxValue =  this.state.dados[ this.state.dados.length-1].frame_id;
-    this.filterSelect =  CATEGORIES[this.state.classId];
+    this.filterSelect = CATEGORIES[this.state.classId];
 
-}
-
-
-ngOnInit(): void {
-
-  const reloadedRecently = sessionStorage.getItem('reloadedRecently');
-  if (!reloadedRecently) {
-    this.load();
-    sessionStorage.setItem('reloadedRecently', 'true');
-  } else {
-    sessionStorage.removeItem('reloadedRecently');
   }
 
-}
 
-load() {
-  window.location.reload();
-}
+  ngOnInit(): void {
 
-atualizarImagem() {
+    const reloadedRecently = sessionStorage.getItem('reloadedRecently');
+    if (!reloadedRecently) {
+      this.load();
+      sessionStorage.setItem('reloadedRecently', 'true');
+    } else {
+      sessionStorage.removeItem('reloadedRecently');
+    }
 
-  this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
-  this.plotRec();
-  this.atualizaParagrafo();
+  }
 
-}
+  load() {
+    window.location.reload();
+  }
 
-ngAfterViewInit() {
+  atualizarImagem() {
 
-  this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.state.frame}`;
+    this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.sliderValue}`;
+    this.plotRec();
+    this.atualizaParagrafo();
 
-  let res = {};
+  }
 
-  let dadosById = this.state.dados.filter((item:any)=>{
-    return (item.person_id == this.state.id) && (item.frame_id <=1800);
-  })
+  ngAfterViewInit() {
 
-  let valoresDistintos = [...new Set(dadosById.map((item:any) => CATEGORIES[item.class]))];
+    this.imagemUrl = `https://oraculo.cin.ufpe.br/api/alphaction/frames${this.state.frame}`;
 
-    valoresDistintos.forEach((d)=>{
-      if(d == CATEGORIES[this.state.classId])  res = {label: d, selected: true, disabled: false}
-      else res = {label: d, selected: false, disabled: false}
+    let res = {};
+
+    let dadosById = this.state.dados.filter((item: any) => {
+      return (item.person_id == this.state.id) && (item.frame_id <= 1800);
+    })
+
+    let valoresDistintos = [...new Set(dadosById.map((item: any) => CATEGORIES[item.class]))];
+
+    valoresDistintos.forEach((d) => {
+      if (d == CATEGORIES[this.state.classId]) res = { label: d, selected: true, disabled: false }
+      else res = { label: d, selected: false, disabled: false }
 
       this.filter.push(res);
     })
 
-    let dados: any = this.state.dados.filter((d:any) => d.person_id == this.state.id && d.valid == false);
+    let dados: any = this.state.dados.filter((d: any) => d.person_id == this.state.id && d.valid == false);
     let width = this.heatmapInf.nativeElement.clientWidth;
     let height = this.heatmapInf.nativeElement.clientHeight;
 
-   this.plotRec();
-   this.atualizaParagrafo();
-   this.PlotdataSet(dadosById);
-   this.ChartLine();
-   this.percInf(dadosById);
-   heatMap(dados, width, height);
-}
+    this.plotRec();
+    this.atualizaParagrafo();
+    this.PlotdataSet(dadosById);
+    this.ChartLine();
+    this.percInf(dadosById);
+    heatMap(dados, width, height);
+  }
 
 
-changeByFilter(event:any){
+  changeByFilter(event: any) {
 
-  let resultado = Array();
+    let resultado = Array();
 
-      if(event.target.name == 'All'){
-        this.filter[0].selected = !this.filter[0].selected;
-        this.filter[0].disabled = true;
+    if (event.target.name == 'All') {
+      this.filter[0].selected = !this.filter[0].selected;
+      this.filter[0].disabled = true;
 
-        if(event.target.checked){
+      if (event.target.checked) {
 
-          this.filter.forEach((item:any)=>{
-              if(item.label != 'All'){
-                resultado.push(item.label);
-                if(item.selected) {
-                  item.selected = !item.selected;
-                }
-
-              }
-
-          });
-        }
-      }else {
-        if(!event.target.checked){
-
-          this.filter.forEach((item:any) =>{
-            if(item.label == event.target.name){
-              item.selected = false;
+        this.filter.forEach((item: any) => {
+          if (item.label != 'All') {
+            resultado.push(item.label);
+            if (item.selected) {
+              item.selected = !item.selected;
             }
-          })
 
-        }else {
-          if(this.filter[0].selected) this.filter[0].selected = !this.filter[0].selected;
-          this.filter.forEach((item:any)=>{
-            if(item.label == event.target.name){
-              item.selected = true;
-            }
-          });
+          }
 
-        }
+        });
+      }
+    } else {
+      if (!event.target.checked) {
+
+        this.filter.forEach((item: any) => {
+          if (item.label == event.target.name) {
+            item.selected = false;
+          }
+        })
+
+      } else {
+        if (this.filter[0].selected) this.filter[0].selected = !this.filter[0].selected;
+        this.filter.forEach((item: any) => {
+          if (item.label == event.target.name) {
+            item.selected = true;
+          }
+        });
 
       }
 
-    if(!this.filter[0].selected){
-      resultado = this.filter.filter((item:any)=>{
+    }
+
+    if (!this.filter[0].selected) {
+      resultado = this.filter.filter((item: any) => {
         return item.selected == true;
       });
-      resultado = [... new Set(resultado.map((item:any)=>item.label))];
+      resultado = [... new Set(resultado.map((item: any) => item.label))];
     }
     this.filterSelect = resultado;
     this.plotRec();
-}
+  }
 
 
-public percInf(result: Data[]){
-  let action = [...new Set(result.map((item) => item.class))];
+  public percInf(result: Data[]) {
+    let action = [...new Set(result.map((item) => item.class))];
 
-  let data = Array();
-  let i = 0;
+    let data = Array();
+    let i = 0;
 
-  // função para calcular quantidades de erros e acertos por ação
-  action.forEach((act) => {
+    // função para calcular quantidades de erros e acertos por ação
+    action.forEach((act) => {
       let valid = result.filter((d) => (d.class === act) && d.valid === true);
       let invalid = result.filter((d) => (d.class === act) && d.valid === false);
 
@@ -196,114 +196,116 @@ public percInf(result: Data[]){
       let soma = valid.length + invalid.length;
 
       let value = {
-          label: CATEGORIES[act],
-          acerto: valid.length / soma,
-          erro: invalid.length / soma
+        label: CATEGORIES[act],
+        acerto: valid.length / soma,
+        erro: invalid.length / soma
       };
       data.push(value);
-  });
+    });
 
-  const margin = { top: 30, right: 10, bottom: 20, left: 100 };
-  const width = (this.barCharts.nativeElement.clientWidth - margin.left - margin.right)/1.3 ;
-  const height = (this.barCharts.nativeElement.clientHeight - margin.top - margin.bottom)/1.3 ;
+    const margin = { top: 30, right: 10, bottom: 20, left: 100 };
+    const width = (this.barCharts.nativeElement.clientWidth - margin.left - margin.right) / 1.3;
+    const height = (this.barCharts.nativeElement.clientHeight - margin.top - margin.bottom) / 1.3;
 
-  const svg = d3.select('#barchart')
+
+    const svg = d3.select('#barchart')
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  const tipo = Object.keys(data[0]).filter(d => d != "label");
-  const actions = data.map(d => d.label);
+    const tipo = Object.keys(data[0]).filter(d => d != "label");
+    const actions = data.map(d => d.label);
 
-  const stackedData = d3.stack()
+    const stackedData = d3.stack()
       .keys(tipo)(data);
 
-  const x = d3.scaleLinear()
+    const x = d3.scaleLinear()
       .domain([0, 1]).nice()
       .range([0, width]);
 
-  const y = d3.scaleBand()
+    const y = d3.scaleBand()
       .domain(actions)
       .range([0, height])
       .padding(0.25);
 
-  const xAxis = d3.axisBottom(x).ticks(5, '~s');
-  const yAxis = d3.axisLeft(y);
+    const xAxis = d3.axisBottom(x).ticks(5, '~s');
+    const yAxis = d3.axisLeft(y);
 
-  svg.append('g')
+    svg.append('g')
       .attr('transform', `translate(0,${height})`)
       .call(xAxis)
       .call(g => g.select('.domain').remove());
 
-  svg.append("g")
+    svg.append("g")
       .call(yAxis)
       .call(g => g.select('.domain').remove());
 
-  const layers = svg.append('g')
+    const layers = svg.append('g')
       .selectAll('g')
       .data(stackedData)
       .join('g')
       .attr('fill', d => d.key === "erro" ? "red" : "green");
 
-  layers.selectAll('rect')
+    layers.selectAll('rect')
       .data(d => d)
       .join('rect')
       .attr('x', d => x(d[0]))
-      .attr('y', (d:any) => y(d.data['label'])!)
+      .attr('y', (d: any) => y(d.data['label'])!)
       .attr('height', y.bandwidth())
       .attr('width', d => x(d[1]) - x(d[0]));
-}
+  }
 
-PlotdataSet(id:Data[]){
+  PlotdataSet(id: Data[]) {
 
-  let aux = new Array();
-  let validAnt:any = '';
+    let aux = new Array();
+    let validAnt: any = '';
 
-  let act = [... new Set(id.map((item:any)=>item.class))];
+    let act = [... new Set(id.map((item: any) => item.class))];
 
-    act.forEach((action)=>{
+    act.forEach((action) => {
 
       validAnt = '';
       aux.length = 0;
-      let rs = id.filter((d:any)=>{
-          return d.class == action;
+      let rs = id.filter((d: any) => {
+        return d.class == action;
       })
-      rs.forEach((item:any)=>{
+      rs.forEach((item: any) => {
 
-        if(validAnt == '') validAnt = item.valid;
+        if (validAnt == '') validAnt = item.valid;
 
-        if(validAnt == item.valid){
+        if (validAnt == item.valid) {
 
-            if((item.frame_id - 1) != aux[aux.length-1]){
-                  let n:any = action;
-                  let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
-                  this.dataSet.push(objeto);
-                  aux.length = 0;
+          if ((item.frame_id - 1) != aux[aux.length - 1]) {
+            let n: any = action;
+            let objeto = { init:aux[0], end: aux[aux.length - 1], label: CATEGORIES[n], color: validAnt === true ? "green" : "red" };
 
-            }
-            else if((aux.length + 1 == rs.length) && (item.frame_id - 1) == aux[aux.length-1]){
-              let n:any = action;
-              let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
-              this.dataSet.push(objeto);
-              aux.length = 0;
-            }
-
-        }
-        else if(aux.length == 1 && item.frame_id - 1 != aux[aux.length-1]){
-              let n:any = action;
-              let objeto = {x: act.indexOf(action),y: [aux[0],aux[0]+1], label: CATEGORIES[n], color: validAnt === true? "#3db5e7":"rgb(190, 186, 186)"};
-              this.dataSet.push(objeto);
-              aux.length = 0;
-        }
-        else{
-
-            let n:any = action;
-            let objeto = {x: act.indexOf(action),y: [aux[0],aux[aux.length-1]], label: CATEGORIES[n], color: validAnt === true ? "#3db5e7":"rgb(190, 186, 186)"};
-            this.dataSet.push(objeto);
+            if(objeto.init != undefined) this.dataSet.push(objeto);
             aux.length = 0;
-            validAnt = item.valid;
+
+          }
+          else if ((aux.length + 1 == rs.length) && (item.frame_id - 1) == aux[aux.length - 1]) {
+            let n: any = action;
+            let objeto = {  init:aux[0], end: aux[aux.length - 1], label: CATEGORIES[n], color: validAnt === true ? "green" : "red" };
+            if(objeto.init != undefined) this.dataSet.push(objeto);
+            aux.length = 0;
+          }
+
+        }
+        else if (aux.length == 1 && item.frame_id - 1 != aux[aux.length - 1]) {
+          let n: any = action;
+          let objeto = { init:aux[0], end: aux[0] + 1, label: CATEGORIES[n], color: validAnt === true ? "green" : "red" };
+          if(objeto.init != undefined) this.dataSet.push(objeto);
+          aux.length = 0;
+        }
+        else {
+
+          let n: any = action;
+          let objeto = {  init:aux[0], end: aux[aux.length - 1], label: CATEGORIES[n], color: validAnt === true ? "green" : "red" };
+          if(objeto.init != undefined) this.dataSet.push(objeto);
+          aux.length = 0;
+          validAnt = item.valid;
 
         }
         aux.push(item.frame_id);
@@ -311,177 +313,236 @@ PlotdataSet(id:Data[]){
       })
 
     })
-}
+  }
 
- calcSize(val1: any, val2: any){
-  return Math.abs(val2 - val1);
-}
+  calcSize(val1: any, val2: any) {
+    return Math.abs(val2 - val1);
+  }
 
-plotRec(): void{
-
-
-  let widthImg = this.imgView.nativeElement.clientWidth;
-  let heightImg = this.imgView.nativeElement.clientHeight;
-
-  let Drs: Data[] = [];
+  plotRec(): void {
 
 
-  Drs = this.state.dados.filter((d:any) => d.frame_id === this.sliderValue && d.person_id == this.state.id
-   && this.filterSelect.includes(CATEGORIES[d.class]));
+    let widthImg = this.imgView.nativeElement.clientWidth;
+    let heightImg = this.imgView.nativeElement.clientHeight;
 
-  let result:number[] = [];
+    let Drs: Data[] = [];
 
 
-  let chartContainer: any = d3.select("#chart-container")
-  chartContainer.selectAll("*").remove();
+    Drs = this.state.dados.filter((d: any) => d.frame_id === this.sliderValue && d.person_id == this.state.id
+      && this.filterSelect.includes(CATEGORIES[d.class]));
 
-  if(Drs.length>0){
+    let result: number[] = [];
 
-    Drs.forEach(d=>{
+
+    let chartContainer: any = d3.select("#chart-container")
+    chartContainer.selectAll("*").remove();
+
+    if (Drs.length > 0) {
+
+      Drs.forEach(d => {
 
         result = calcPoint(d.bb_x1, d.bb_y1, d.bb_x2, d.bb_y2, widthImg, heightImg);
-        if(result){
+        if (result) {
 
-           d.x = result[0];
-           d.y = result[1];
-           d.width =  this.calcSize(d.bb_x1 * widthImg, d.bb_x2 * widthImg );
-           d.height = this.calcSize(d.bb_y1 * heightImg, d.bb_y2 * heightImg);
+          d.x = result[0];
+          d.y = result[1];
+          d.width = this.calcSize(d.bb_x1 * widthImg, d.bb_x2 * widthImg);
+          d.height = this.calcSize(d.bb_y1 * heightImg, d.bb_y2 * heightImg);
         }
-    });
+      });
 
-          let i = 8;
+      let i = 8;
 
-          let svg= chartContainer
-          .append("svg")
-          .attr("width", `${widthImg}px`)
-          .attr("height", `${heightImg}px`);
+      let svg = chartContainer
+        .append("svg")
+        .attr("width", `${widthImg}px`)
+        .attr("height", `${heightImg}px`);
 
-          const rect = svg.selectAll("g")
-           .data(Drs)
-           .enter()
-           .append("g");
+      const rect = svg.selectAll("g")
+        .data(Drs)
+        .enter()
+        .append("g");
 
 
-           rect.append("rect")
-            .attr("x", (d: any) => d.x - (d.width/2))
-            .attr("y", (d: any) => d.y - (d.height/2))
-            .attr("width", (d: any) => d.width)
-            .attr("height",(d: any) => d.height)
-            .attr("stroke", (d: any)=> "white")
-            .attr("fill", 'none');
-           
-          // se d.height * 2 >= height = colocar menor a largura
-          // caso contrário, coloca maior a altura
-           rect.append("rect")
-            .attr("x", (d: any) => d.x - d.width/1.5)
-            .attr("y", (d: any) => {
-              if(d.height * 2.5 >= heightImg) return d.y - d.height/1.2;
-              else return d.y - d.height/1.1;
-            })
-            .attr("width", (d: any) => d.width/0.75)
-            .attr("height",(d: any) => {
-              if(d.height * 2.5 >= heightImg) return d.height / 3;
-              else return d.height / 2;
-            })
-            .attr("stroke", (d: any)=> "white")
-            .attr("fill", "white");
+      rect.append("rect")
+        .attr("x", (d: any) => d.x - (d.width / 2))
+        .attr("y", (d: any) => d.y - (d.height / 2))
+        .attr("width", (d: any) => d.width)
+        .attr("height", (d: any) => d.height)
+        .attr("stroke", (d: any) => "white")
+        .attr("fill", 'none');
 
-          rect.append("text")
-            .attr("x", (d: any) =>d.x * 1.1)
-            .attr("y", (d: any) =>  d.y - (d.height/2) - 5 + (i-=8))
-            .attr("text-anchor", "end")
-            .attr("dominant-baseline", "middle")
-            .attr("fill", "black")
-            .attr("font-weight", "bold")
-            .attr("font-size", "1.4rem")
-            .attr("stroke",  (d: any)=> d.valid == true ? "green": "red")
-            .attr("stroke-width", 0.5)
-            .attr("font-size", "1.4rem")
-            .text((d:any)=>CATEGORIES[d.class]);
+      rect.append("rect")
+        .attr("x", (d: any) => d.x - d.width / 1.5)
+        .attr("y", (d: any) => {
+          if (d.height * 2.5 >= heightImg) return d.y - d.height / 1.2;
+          else return d.y - d.height / 1.1;
+        })
+        .attr("width", (d: any) => d.width / 0.75)
+        .attr("height", (d: any) => {
+          if (d.height * 2.5 >= heightImg) return d.height / 3;
+          else return d.height / 2;
+        })
+        .attr("stroke", (d: any) => "white")
+        .attr("fill", "white");
+
+      rect.append("text")
+        .attr("x", (d: any) => d.x * 1.1)
+        .attr("y", (d: any) => d.y - (d.height / 2) - 5 + (i -= 8))
+        .attr("text-anchor", "end")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", "black")
+        .attr("font-weight", "bold")
+        .attr("font-size", "1.4rem")
+        .attr("stroke", (d: any) => d.valid == true ? "green" : "red")
+        .attr("stroke-width", 0.5)
+        .attr("font-size", "1.4rem")
+        .text((d: any) => CATEGORIES[d.class]);
 
     }
-}
-toAlpha(){
-
-    const navigationExtras: NavigationExtras = {
-      state: {
-        frame: this.state.frame,
-      }
-    };
-
-   this.router.navigate(['/alphavis'],  {state: {frame: this.state.frame}});
-}
-
-changeVisibility():void{
-
-  let result = this.heatmapInf.nativeElement
-
-  if(!this.sunnydisplay){
-    result.setAttribute('style', 'visibility: visible');
-    this.sunnydisplay = !this.sunnydisplay;
-  }
-  else {
-    result.setAttribute('style', 'visibility: hidden');
-    this.sunnydisplay = !this.sunnydisplay;
   }
 
-}
+  changeVisibility(): void {
 
-atualizaParagrafo():void{
+    let result = this.heatmapInf.nativeElement
+
+    if (!this.sunnydisplay) {
+      result.setAttribute('style', 'visibility: visible');
+      this.sunnydisplay = !this.sunnydisplay;
+    }
+    else {
+      result.setAttribute('style', 'visibility: hidden');
+      this.sunnydisplay = !this.sunnydisplay;
+    }
+
+  }
+
+  atualizaParagrafo(): void {
 
 
-  this.paragrafos.length = 0;
-  let rst = this.state.dados.filter((d:Data)=>{
-    return (d.person_id == this.state.id) && (d.frame_id <= this.sliderValue);
-  })
+    this.paragrafos.length = 0;
+    let rst = this.state.dados.filter((d: Data) => {
+      return (d.person_id == this.state.id) && (d.frame_id <= this.sliderValue);
+    })
 
-  let rstClassQtd = rst.map((item:Data)=>CATEGORIES[item.class]);
+    let rstClassQtd = rst.map((item: Data) => CATEGORIES[item.class]);
 
-  // console.log("map class rts walk:::\n", rstClassQtd.filter((item:string)=> item == "walk").length);
+    // console.log("map class rts walk:::\n", rstClassQtd.filter((item:string)=> item == "walk").length);
 
-  let rstClass:any =  [... new Set(rst.map((item:any)=>item.class))];
-  var objectClass = {img: 0, categorie: "string", quantideCat: 0}; // setando tipificação
+    let rstClass: any = [... new Set(rst.map((item: any) => item.class))];
+    var objectClass = { img: 0, categorie: "string", quantideCat: 0 }; // setando tipificação
 
-  rstClass.forEach((classId:number)=>{
-    objectClass = {img: classId, categorie : CATEGORIES[classId],
-    quantideCat:rstClassQtd.filter((item:string)=> item == CATEGORIES[classId]).length };
+    rstClass.forEach((classId: number) => {
+      objectClass = {
+        img: classId, categorie: CATEGORIES[classId],
+        quantideCat: rstClassQtd.filter((item: string) => item == CATEGORIES[classId]).length
+      };
 
-    this.paragrafos.push(objectClass);
-  })
+      this.paragrafos.push(objectClass);
+    })
 
-}
+  }
 
-public ChartLine(){
+  public ChartLine() {
+    console.log("resultado interval charts:", this.dataSet);
+    const margin = { top: 20, right: 10, bottom: 20, left: 100};
+    const width = (this.barCharts.nativeElement.clientWidth - margin.left - margin.right) / 1.3;
+    const height = (this.barCharts.nativeElement.clientHeight - margin.top - margin.bottom)/ 1.3;
 
-  this.chartOptions = {
-    interactivityEnabled: true,
-    width: this.chartLine.nativeElement.clientWidth,
-    height:this.chartLine.nativeElement.clientHeight ,
-		animationEnabled: true,
-		theme: "light2",
-    axisY:{
-      gridThickness: 0
-    },
-    options: {
-      legend: {
-         display: true
-      },
-    },
-		axisX: {
-			title: "Ações por Frame",
-      gridThickness: 0,
 
-		},
-		data: [{
-			type: "rangeBar",
-			showInLegend: true,
-			legendText: "Frames(s)",
-			color: "white",
-			dataPoints: this.dataSet
-		}]
-	}
+    let chartContainer: any = d3.select("#chartLine")
+    chartContainer.selectAll("*").remove();
 
-}
+    let svg = chartContainer
+    .append("svg")
+    .attr('width', (width + margin.left + margin.right))
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear()
+    .domain([0, 1800])
+    .range([0, width]);
+
+    const y = d3.scaleBand()
+    .domain(this.dataSet.map(d => d.label))
+    .range([0, height])
+    .padding(0.25);
+
+    const xAxis = d3.axisBottom(x).ticks(6, '~s');
+    const yAxis = d3.axisLeft(y);
+
+    svg.append('g')
+    .attr('transform', `translate(0,${height})`)
+    .call(xAxis)
+    .call((g:any) => g.select('.domain').remove());
+
+    svg.append("g")
+      .call(yAxis)
+      .call((g:any) => g.select('.domain').remove());
+
+    var tooltip = d3.select("#chartLine")
+    .append("div")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .attr("id", "tooltip")
+    .style("z-index", "10")
+    .style("background-color", "white")
+    .style("width","10%")
+    .style("height","5%")
+    .style("border" , "2%")
+    .style("font-size", "1.5rem");
+
+    // svg.append('text')
+    // // .attr('class', 'x-axis-label')
+    // .attr('text-anchor', 'middle')
+    // .attr('x', width / 2)
+    // .attr('y', height + margin.bottom + 5)
+    // .attr("font-size", "1.2rem")
+    // .attr("font-family", "Quicksand")
+    // .attr("color", "#686767")
+    // .text('Frames');
+
+  // Add y-axis label
+  svg.append('text')
+    // .attr('class', 'y-axis-label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', 'rotate(-90)')
+    .attr('x', -height / 2)
+    .attr('y', -margin.left + 10)
+    .attr("font-size", "1.2rem")
+    .attr("font-family", "Quicksand")
+    .attr("color", "#686767")
+    .text('Intervalos de predições');
+
+    tooltip.selectAll("*").remove();
+
+    svg.selectAll('.bar')
+      .data(this.dataSet)
+      .enter().append('rect')
+      .attr('class', 'bar')
+      .attr('x', (d:any) => x(d.init))
+      .attr('y', (d:any) => y(d.label))
+      .attr('width', (d:any) => x(d.end) - x(d.init))
+      .attr('height', y.bandwidth())
+      .attr('fill', (d:any) => d.color)
+      .on("mouseover", (i:any, d:any) => {
+        console.log("aqui aqui");
+        tooltip.transition()
+          .duration(200)
+          .style("visibility", "visible")
+          .style("opacity", 0.9)
+          .style("cursor", "default");
+        tooltip.html(`${d.label} : [${d.init} ,${d.end}]`)
+          .style("left", (i.pageX) + "px")
+          .style("top", (i.pageY) + "px")
+          .style("color", d.color);
+      })
+      .on("mouseout", function () {
+        tooltip.transition().duration(500).style("opacity", 0);
+      });
+
+  }
 
 
   togglePlay() {

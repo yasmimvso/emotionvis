@@ -1,46 +1,14 @@
 
 
 <app-tamplate></app-tamplate>
-<div class="show-case">
+<div class="main">
   <app-nav></app-nav>
-  <div class="main-portion">
+  <!-- <div class="main-portion">
     <div class="top-portion">
-        <!-- <h2 class="title-top">
-          Interface de Debug AlphaVis
-        </h2> -->
-
-      <!-- <div class="separator"></div> -->
-    </div>
+    </div> -->
     <div class="cases">
-      <div class="midia-vis">
-        <a routerLink="/visData" style="text-decoration:none;">
-          <div class="container-data">
-            <img class="data-case" src= "../../../assets/img/analise-dados.jpeg">
-          </div>
-
-          <p class="texto">
-            <i class="material-icons v-middle">
-              timeline
-            </i>
-            Resumo de Dados
-          </p>
-        </a>
-      </div>
-      <div class="midia-vis">
-        <a routerLink="/alphavis" style="text-decoration:none;">
-          <div class="container-data-gif ">
-            <img class="gif" src= "../../../assets/img/gitHome.gif">
-          </div>
-          <p class="texto">
-            <i class="material-icons v-middle">
-              art_track
-            </i>
-            Alphavis
-          </p>
-        </a>
-      </div>
+      <app-midia link="/visData" contentSrc="../../../assets/img/analise-dados.jpeg" icon="timeline" midiaName="Resumo de Dados"></app-midia>
+      <app-midia link="/alphavis" contentSrc="../../../assets/img/gitHome.gif" icon="art_track" midiaName="Alphavis"></app-midia>
     </div>
-
-  </div>
 </div>
 <app-footer></app-footer>
