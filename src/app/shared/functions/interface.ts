@@ -13,9 +13,9 @@ export interface Data{
   height?: any;
 }
 
-export interface Canva{
-  x: any;
-  y: any;
+export interface Interval{
+  init: number;
+  end: number;
   label: string;
   color: string
 };

@@ -1,16 +1,18 @@
 
-.canvas-alphavis {
+.canvas-alphavis, .date{
   display: flex;
   flex-direction: row;
-  justify-content:space-between;
   width: 80%;
-  height: 52%;
+  height: 49%;
   border-radius: 1rem;
+  align-items: center;
   border: 0.2rem solid #a7a7a7;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   background-color: rgba(240, 235, 235, 0.807);
   padding-left: 2%;
 }
+
+.canvas-alphavis, .date{ justify-content:space-evenly;}
 
 .checkbox{
   display: flex;
@@ -33,7 +35,7 @@
 }
 
 .title-top{
-  padding-top: 2%;
+  padding-top: 1%;
   font-size: 200%;
   width: 80%;
   margin: -1% 0% 2% 0%;
@@ -89,25 +91,26 @@ h3{
 }
 
 .span-title{
-  height: 5%;
+  height: 3%;
   display: flex;
   flex-direction:row;
   width: 90%;
-  margin-bottom: 2%;
+  margin-bottom: 1%;
+
 }
 .dataPlot{
   height: 90%;
   width: 20%;
   border-radius: 1rem;
-  margin-right: 1%;
   background-color: rgba(240, 235, 235, 0.807);
   border: 0.2rem solid #a7a7a7;
 }
 
 .board-view{
   width: 90%;
-  height: 85%;
+  height: 84%;
   position: relative;
+  margin: auto;
 }
 .board-view img {
   width: 100%;
@@ -149,27 +152,21 @@ h3{
   width: 90%;
   display: flex;
   align-items: center;
-  justify-content:space-evenly;
+  justify-content: center;
   margin-top: 2%;
   margin-bottom: 2%;
 }
 
 
 .date{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 39%;
-  width: 87%;
-  opacity: 0.9;
+  height: 38%;
+  justify-content:space-evenly;
 }
 
 .lineCard {
 padding-top: 0.5%;
 padding-left: 1%;
-width: 70%;
+width: 80%;
 height: 100%;
 background-color: rgba(240, 235, 235, 0.807);
 border-radius: 10px;
@@ -178,7 +175,17 @@ border:  1px solid #c1bcbc;
 justify-content: center;
 align-items: center;
 text-align: center;
+background-color: crimson;
 }
+
+/*
+  height: 100%;
+  width: 20%;
+  border-radius: 1rem;
+  margin-right: 1%;
+  background-color: rgba(240, 235, 235, 0.807);
+  border: 0.2rem solid #a7a7a7;
+*/
 
 #opacity{
 width: 50px;
@@ -196,21 +203,20 @@ transform-origin: 75px 75px;
 }
 
 .instruction-click{
-   min-width: 50%;
+   min-width: 60%;
    display: flex;
    flex-direction: row;
    justify-content: left;
 }
 
 .instruction-button{
-  width: 50%;
+  width: 40%;
   display: flex;
   flex-direction: row;
   justify-content: right;
 }
 
 .heatmapImg{
-  /* visibility: hidden; */
   position: absolute;
   width: 100%;
   height: 100%;

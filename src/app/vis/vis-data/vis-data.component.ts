@@ -10,7 +10,7 @@ import { forkJoin } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { Data } from 'src/app/shared/functions/interface';
 
-import 'anychart';
+// import 'anychart';
 import * as d3 from 'd3';
 
 interface Dados {
@@ -19,7 +19,6 @@ interface Dados {
   image?: string;
 }
 
-// APENAS PRINTAR COISAS SE EXISTIR IMAGENS
 @Component({
   selector: 'app-vis-data',
   templateUrl: './vis-data.component.html',
@@ -65,7 +64,6 @@ export class VisDataComponent implements OnInit{
     window.location.reload();
   }
 
-
   ngAfterViewInit():void{
     this.loadInfo();
   }
@@ -89,6 +87,8 @@ export class VisDataComponent implements OnInit{
       let qtdIndv  = result.filter((item:any) => item.valid == false && item.class == action);
       let qtdTotal = result.filter((item:any) => item.class == action);
 
+      // essa função existe dado que conheço meus dados e as imagens associadas a elas
+      // vejo o índice da ação e associo a uma imagem (atualmente estão limitadas a quantidade de iamgens)
       if([10,13,11,79,16].indexOf(action)>=0){
         imgUrl = `../../../assets/img/img${action}.png`
       } else imgUrl = '../../../assets/img/img14.png';
@@ -98,7 +98,7 @@ export class VisDataComponent implements OnInit{
       qtdByAcion.push(object);
     })
 
-  this.creatPieChart(qtdByAcion)
+  this.createChart(qtdByAcion, "#containerPie", "Porcentagem de erros por ação")
   }
 
   calcQtdByAction(){
@@ -118,8 +118,8 @@ export class VisDataComponent implements OnInit{
       qtdByAcion.push(object);
 
     })
-
-    this.createChart( qtdByAcion);
+    // dados, id do componete chart, titulo do componente
+    this.createChart( qtdByAcion, "#containerBar", "Total de ações detectadas");
   }
 
   loadInfo(){
@@ -137,13 +137,13 @@ export class VisDataComponent implements OnInit{
 
   }
 
-  createChart(dados:Dados[]) {
+  createChart(dados:Dados[], id:string, title:string) {
 
     let margin = {top: 30, right: 30, bottom: 30, left: 70},
     width = this.chartBar.nativeElement.clientWidth - margin.left - margin.right,
     height =  this.chartBar.nativeElement.clientHeight - margin.top - margin.bottom;
 
-    let chartContainer = d3.select("#containerBar")
+    let chartContainer = d3.select(id)
     chartContainer.selectAll('*').remove();
 
     let svg = chartContainer
@@ -181,7 +181,6 @@ export class VisDataComponent implements OnInit{
       .attr("height", y.bandwidth() * 0.9)
       .attr("width", (d:any) => x(d.qtd) * 0.8)
       .attr("fill", "#3498db");
-
     svg
       .selectAll(".class-image")
       .data(dados)
@@ -199,76 +198,8 @@ export class VisDataComponent implements OnInit{
       .attr("text-anchor", "middle")
       .style("font-size", "1.3rem")
       .style("color", "rgb(103, 104, 104)")
-      .text("Total de ações detectadas");
+      .text(title);
   }
-
-  creatPieChart(dados:Dados[]){
-
-    let margin = {top: 30, right: 30, bottom: 30, left: 70},
-    width = this.chartBar.nativeElement.clientWidth - margin.left - margin.right,
-    height =  this.chartBar.nativeElement.clientHeight - margin.top - margin.bottom;
-
-    let chartContainer = d3.select("#containerPie")
-    chartContainer.selectAll('*').remove();
-
-    let svg = chartContainer
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + 80 + "," + margin.top + ")");
-
-    var y = d3.scaleBand()
-      .range([height, 0])
-      .domain(dados.map((d:any) => d.nome))
-      .padding(0.2);
-
-
-    let x = d3.scaleLinear()
-      .domain([0, d3.max(dados, (d:any) => d.qtd)])
-      .range([0, width]);
-
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-      .selectAll("text");
-
-    svg.append("g")
-      .call(d3.axisLeft(y));
-
-    svg.selectAll(".bar")
-      .data(dados)
-      .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", (d:any) => 10)
-      .attr("y", (d:any) => y(d.nome)!)
-      .attr("height", y.bandwidth() * 0.9)
-      .attr("width", (d:any) => x(d.qtd) * 0.8)
-      .attr("fill", "#3498db");
-
-    svg
-      .selectAll(".class-image")
-      .data(dados)
-      .enter()
-      .append("image")
-      .attr("class", "class-image")
-      .attr("xlink:href", (d:any) => d.image)
-      .attr("x", (d:any) => x(d.qtd) * 0.8 + 15)
-      .attr("y", (d:any) => y(d.nome)!)
-      .attr("width", y.bandwidth());
-
-    svg.append("text")
-      .attr("x", (width / 2))
-      .attr("y", 0 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "1.3rem")
-      .style("color", "rgb(103, 104, 104)")
-      .text("Porcentagem de erros por ação");
-
-
-  }
-
   errorByFrames(dados:any){
 
       let errorByFrame : any = [];

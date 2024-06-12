@@ -1,5 +1,4 @@
-
-.content-main{
+.content-main {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -9,33 +8,33 @@
   margin-top: 0.5%;
 }
 
-p{
-  font-size : 1.2rem;
+p {
+  font-size: 1.2rem;
 }
 
-.section-initial{
+.section-initial {
   width: 100%;
   height: 5%;
-  justify-content:space-evenly;
+  justify-content: space-evenly;
   display: inline-flex;
 }
 
-.back-content::hover{
-  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+.back-content::hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
   transform: scale(1.2);
 }
 
-.checkbox{
+.checkbox {
   display: flex;
   flex-direction: column;
-  height: 70%;
+  height: 90%;
   width: 20%;
   margin-top: 2%;
   border-radius: 15px;
   background-color: rgba(240, 235, 235, 0.807);
 }
 
-.filters{
+.filters {
   margin-top: 2%;
   width: 100%;
   height: 80%;
@@ -44,19 +43,20 @@ p{
   flex-direction: row;
 }
 
-.back{
+.back {
   width: 90%;
   height: 90%;
   color: black;
 }
 
-.title{
-  color:#686767;
+.title {
+  color: #686767;
   font-size: 200%;
   margin-right: 20%;
 }
-.view{
-  height: 43%;
+
+.view {
+  height: 40%;
   width: 77%;
   display: flex;
   flex-direction: column;
@@ -65,26 +65,24 @@ p{
   padding: 1%;
   border: 0.2rem solid #a7a7a7;
   border-radius: 1.2rem;
-  margin-top:2%;
+  margin-top: 2%;
 }
 
-.view-main{
-  height: 98%;
+.view-main {
+  height: 94%;
   width: 100%;
   display: flex;
   flex-direction: row;
 }
 
-.person-data{
+.person-data {
   margin-top: 1%;
   height: 90%;
   width: 30%;
-  /* box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); */
-  /* background-color: rgba(240, 235, 235, 0.807); */
 }
 
-.lineCharts{
-  height: 33%;
+.lineCharts {
+  height: 36%;
   width: 77%;
   display: flex;
   flex-direction: column;
@@ -94,16 +92,16 @@ p{
   padding: 1%;
   border: 0.2rem solid #a7a7a7;
   border-radius: 1.2rem;
-  margin-top:0.5%;
+  margin-top: 0.5%;
 }
-
-.bar-chart{
+/*
+.bar-chart {
   height: 100%;
-  overflow:hidden;
+  overflow: hidden;
   width: 40%;
-}
+} */
 
-.filters{
+.filters {
   margin-top: 2%;
   width: 100%;
   height: 80%;
@@ -119,52 +117,53 @@ p{
   align-items: center;
 }
 
-label{
+label {
   width: 50%;
   font-size: 14px;
 }
 
-.checkbox-container input{
+.checkbox-container input {
   height: 60%;
   width: 30%;
   border: 1px solid rgb(190, 186, 186);
   border-radius: 2px;
-  margin:0;
+  margin: 0;
   cursor: pointer;
 }
 
-.video{
+.video {
   width: 90%;
   height: 85%;
   position: relative;
 }
 
-.video #chart-container{
+.video #chart-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  top:0;
+  top: 0;
   left: 0;
 }
 
-.plotInf{
+.plotInf {
   margin-top: 5%;
   margin-left: 5%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
 }
-.heatmapImg{
+
+.heatmapImg {
   visibility: hidden;
   position: absolute;
   width: 100%;
   height: 100%;
-  top:0;
+  top: 0;
   left: 0;
   opacity: 0.7;
 }
 
-.heatMap{
+.heatMap {
   width: 45%;
   height: 100%;
   margin-top: 1%;
@@ -173,59 +172,60 @@ label{
   flex-direction: column;
 }
 
-.slider-container{
+.slider-container {
   justify-content: space-around;
 }
 
-.slider{
+.slider {
   width: 80%;
 }
-.sunny_heat{
-   height: 100%;
-   width:10%;
-   /*background-color:rgba(225, 218, 218, 0.807);*/
-   text-align: center;
-   float: right;
-   cursor: pointer;
+
+.sunny_heat {
+  height: 100%;
+  width: 10%;
+  /*background-color:rgba(225, 218, 218, 0.807);*/
+  text-align: center;
+  float: right;
+  cursor: pointer;
 }
 
-.sunny_heat:hover{
-    cursor: pointer;
+.sunny_heat:hover {
+  cursor: pointer;
 }
 
-.heatmap-container{
+.heatmap-container {
   height: 90%;
   width: 100%;
   position: relative;
 }
 
 
-.chartLine{
-  width: 50%;
-  opacity: 0.9;
+.bar-chart, .chartLine{
   height: 100%;
-  border: 1px solid #c1bcbc;
+  overflow: hidden;
+  width: 48%;
 }
+
 
 .graph-svg-component {
   background-color: AliceBlue;
 }
 
-#plotLine{
-padding-top: 2%;
-padding-left: 1%;
-width: 70%;
-height: 100%;
-background-color: rgba(240, 235, 235, 0.807);
-border-radius: 10px;
+#plotLine {
+  padding-top: 2%;
+  padding-left: 1%;
+  width: 70%;
+  height: 100%;
+  background-color: rgba(240, 235, 235, 0.807);
+  border-radius: 10px;
 }
 
-#dataPlot{
+#dataPlot {
   margin-left: 3%;
   height: 80%;
 }
 
-.dataPlot{
+.dataPlot {
   height: 100%;
   width: 20%;
   border-radius: 10px;
@@ -233,55 +233,68 @@ border-radius: 10px;
   background-color: rgba(240, 235, 235, 0.807);
 }
 
-.actions{
+.actions {
   border: 1px solid rgb(190, 186, 186);
   border-radius: 5px;
   height: 60%;
   overflow: auto;
 }
 
-.actions-title{
+.actions-title {
   margin: 0;
   padding-top: 1%;
   border-bottom: 1px solid #a7a7a7;
   text-align: center;
 }
 
-.actions-info{
+.actions-info {
   display: inline-flex;
   gap: 30px
 }
 
-.canvas-range-chart{
+.canvas-range-chart {
   width: 50%;
 }
 
-.developed{
+.developed {
   height: 3%;
   width: 95%;
   font-size: 1.1rem;
   text-align: end;
   margin-top: 1%;
 }
-.voxar{
-  color:#3db5e7;
+
+.voxar {
+  color: #3db5e7;
 }
 
-.heatmap-button{
-   padding: 4px;
-   font-size: 1.2rem;
-   background-color: #cccc;
-   border: none;
-   border-radius: 2% solid #cccc;
-   box-shadow: 5% 3% 5px black;
-   margin-right: 1%;
-   cursor: pointer;
+.heatmap-button {
+  padding: 4px;
+  font-size: 1.2rem;
+  background-color: #cccc;
+  border: none;
+  border-radius: 2% solid #cccc;
+  box-shadow: 5% 3% 5px black;
+  margin-right: 1%;
+  cursor: pointer;
 }
 
 
-.instruction-button{
+.instruction-button {
   width: 50%;
   display: flex;
   flex-direction: row;
   justify-content: right;
+}
+
+.graphs
+{
+  width: 100%; height: 90%; display: flex; flex-direction: row; justify-content: space-around;
+}
+
+.axis{
+  text-align: center;
+  font-family: "Quicksand";
+  color: #686767;
+  font-size: 1.2rem;
 }
