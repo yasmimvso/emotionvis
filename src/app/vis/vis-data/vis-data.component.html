@@ -3,13 +3,13 @@
   <div>
     <div class="main">
         <app-nav></app-nav>
-        <div class="container-chart-main mat-elevation-z3">
+        <div class="container-chart-main mat-elevation-z3 gray-color-background">
           <div class="text-alert-container">
             <h2><em>Visualização de Dados Sumarizados</em></h2>
             <p>Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
           </div>
           <div class="charts-data chart-contorn ">
-              <div class="img-plotBar chart-contorn mat-elevation-z3">
+              <div class="img-plotBar chart-contorn mat-elevation-z3 blue-color-background">
                 <p style="color: #fff">Frames com maiores números de ações preditas com erros</p>
                 <div class="view-img">
                   <img [src]="imagemUrl" alt="imagem.jpg" #img>
@@ -23,7 +23,7 @@
                 </mat-card>
 
                 <div class="list-frame chart-contorn mat-elevation-z3">
-                  <div class="description-frames-erros mat-elevation-z2">
+                  <div class="description-frames-erros mat-elevation-z2 blue-color-background">
                     <div class="title-frame-icon">
                       <a matTooltip="Os frames são clicáveis" matTooltipClass="example-tooltip-uppercase" class="icon-click">
                         <i class="material-icons" style="font-size: 1.7rem; color: #fff">touch_app</i>
@@ -45,8 +45,8 @@
                  </div>
               </div>
               <div class="pie-inf chart-contorn mat-elevation-z3">
-               <div id="containerBar" class="container-bar mat-elevation-z3" #containerBar></div>
-               <div id="containerPie" class="container-bar mat-elevation-z3" #containerPie></div>
+               <div id="containerBar" class="container-bar mat-elevation-z6" #containerBar></div>
+               <div id="containerPie" class="container-bar mat-elevation-z6" #containerPie></div>
               </div>
           </div>
         </div>

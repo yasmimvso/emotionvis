@@ -21,7 +21,7 @@ import * as d3 from 'd3';
 export class AlphavisComponent implements OnInit{
 
   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
-  @ViewChild('imgView', {static:true }) private imgView! : ElementRef;
+  @ViewChild('imgView', { static: true}) imgView!: ElementRef;
   @ViewChild('dataPlot',{static: true}) private dataPlot! : ElementRef;
   @ViewChild('heatmap', {static: true}) private heatmapInf! : ElementRef;
 
@@ -50,7 +50,7 @@ export class AlphavisComponent implements OnInit{
   data: Data[] = [];
 
   inalphaVis : boolean = false;
-
+  BuffersizeImg : any;
 
   constructor(private uploadRs: FrameService, private uploadGt: GroundingService,private slidVal: SlideValueService , private router: Router){}
 
@@ -169,6 +169,7 @@ export class AlphavisComponent implements OnInit{
 
 
     this.isPlaying = false;
+    this.BuffersizeImg = this.imgView.nativeElement.clientWidth;
 
     this.atualizarImagem();
 
@@ -624,6 +625,22 @@ plotChartLine(data: Data[], currentFrame:any): void{
         .text(`Frame ${currentFrame}`);
     }
 
+
+ zoomin() {
+  let zoomImg =this.imgView.nativeElement;
+  let currWidth = zoomImg.clientWidth;
+  console.log("currente largura:", currWidth);
+  zoomImg.style.width = currWidth * 1.2 + "px";
+  zoomImg.style.zoom = "50%"
+  // console.log("tamanho corrente da imagem", currWidth);
+}
+
+zoomout() {
+  let zoomImg = <HTMLElement> document.getElementsByClassName("img")[0];
+  let currWidth = this.imgView.nativeElement.clientWidth;
+  if(parseFloat(currWidth) * 0.8 > this.BuffersizeImg) zoomImg.style.width = (parseFloat(currWidth) * 0.8).toString();
+  else zoomImg.style.width = this.BuffersizeImg + "px";
+}
 
   togglePlay() {
 

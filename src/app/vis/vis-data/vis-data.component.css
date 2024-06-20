@@ -2,7 +2,7 @@
 .container-chart-main{
   width: 80%;
   height: 95%;
-  background-color: rgba(240, 235, 235, 0.807);
+  background-color: #ccc;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -54,7 +54,6 @@ h2, p{
   flex-direction: column;
   height: 100%;
   width: 50%;
-  background-color: #3db5e7;
   align-items: center;
   justify-content: space-around;
 }
@@ -116,7 +115,6 @@ img{
   justify-content:space-evenly;
   display: flex;
   flex-direction: raw;
-  background-color:  #3db5e7;
   opacity: 0.8;
 }
 

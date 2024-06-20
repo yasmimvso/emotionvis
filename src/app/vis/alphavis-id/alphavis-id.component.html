@@ -1,7 +1,7 @@
 <div class="alphavis">
   <app-tamplate></app-tamplate>
   <div class="main">
-    <app-nav class="nave"></app-nav>
+    <app-nav class="nave blue-color-background"></app-nav>
     <div class="content">
       <div class="section-initial">
         <a class="back-content" routerLink="/alphavis">
@@ -9,7 +9,7 @@
         </a>
         <h2 class="title">Alphavis/ Visualização de detecções individuais</h2>
       </div>
-      <div class="view mat-elevation-z4">
+      <div class="view mat-elevation-z4 gray-color-background">
         <div style="width: 60%; height: 5%; display:flex;flex-direction: row; justify-content: start;">
           <i class="material-icons v-middle" style="color: green; font-size: 13px;">
             radio_button_checked
@@ -22,8 +22,8 @@
         </div>
 
         <div class="view-main">
-          <div class="checkbox mat-elevation-z3">
-            <h3 style="padding: 8px; border-bottom: 1px solid #a7a7a7; text-align: center;">Filtrar dados por ação</h3>
+          <div class="checkbox mat-elevation-z3 gray-color-background">
+            <h3 style="padding: 8px; border-bottom: 1px solid #a7a7a7; text-align: center;">Filtro por ação</h3>
             <ng-container class="filters" *ngFor="let trd of filter">
               <div class="checkbox-container">
                 <input type="checkbox" [name]="trd.label" [checked]="trd.selected" [disabled]="trd.disabled"
@@ -71,7 +71,7 @@
           </div>
         </div>
       </div>
-      <div class="dadosBygraph mat-elevation-z3">
+      <div class="lineCharts mat-elevation-z3 gray-color-background">
         <h2 style="margin-bottom: 0.5%;">Dados totais individuais sumarizados</h2>
         <div class="graphs">
           <div class="chartLine mat-elevation-z3" #chartLine>

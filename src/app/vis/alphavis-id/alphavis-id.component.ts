@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { calcPoint } from '../../shared/functions/alphavis.points';
 import { CATEGORIES } from '../../shared/functions/alphavis.categories';
 import { Data, Interval } from '../../shared/functions/interface'
 import * as d3 from 'd3';
 import { heatMap } from 'src/app/shared/functions/heatmap';
+import { random } from 'cypress/types/lodash';
 
 @Component({
   selector: 'app-alphavis-id',
@@ -15,7 +16,7 @@ import { heatMap } from 'src/app/shared/functions/heatmap';
 export class AlphavisIdComponent {
 
   @ViewChild('chartLine', { static: true }) private chartLine!: ElementRef;
-  @ViewChild('imgView', { static: true }) private imgView!: ElementRef;
+  @ViewChild('imgView', { static: false }) private imgView!: ElementRef;
   @ViewChild('barCharts', { static: true }) private barCharts!: ElementRef;
   @ViewChild('heatmap', { static: true }) private heatmapInf!: ElementRef;
 
@@ -319,6 +320,11 @@ export class AlphavisIdComponent {
     return Math.abs(val2 - val1);
   }
 
+
+  verifyHeight(person:any, frame: any): Data[]{ // verificar a quantidade de ações para aquele frame e id analisado
+    return this.state.dados.filter((data:any)=> data.person_id == person && data.frame_id == frame);
+  }
+
   plotRec(): void {
 
 
@@ -351,46 +357,71 @@ export class AlphavisIdComponent {
         }
       });
 
-      let i = 8;
+    let i = 8;
 
-      let svg = chartContainer
-        .append("svg")
-        .attr("width", `${widthImg}px`)
-        .attr("height", `${heightImg}px`);
+    let svg = chartContainer
+      .append("svg")
+      .attr("width", `${widthImg}px`)
+      .attr("height", `${heightImg}px`);
 
-      const rect = svg.selectAll("g")
-        .data(Drs)
-        .enter()
-        .append("g");
+    const rect = svg.selectAll("g")
+      .data(Drs)
+      .enter()
+      .append("g");
+
+    // bounding box
+    rect.append("rect")
+      .attr("x", (d:any) => d.x - (d.width / 2))
+      .attr("y", (d:any) => d.y - (d.height / 2))
+      .attr("width", (d:any) => d.width)
+      .attr("height", (d:any) => d.height)
+      .attr("stroke", "white")
+      .attr("fill", 'none');
+
+    // box over bounding box for information
+    rect.append("rect")
+      .attr("x", (d:any) => d.x - d.width / 2)
+      .attr("y", (d:any) => {
+        if (d.height * 2.5 >= heightImg) return d.y - d.height / 1.2;
+        else return d.y - d.height / 1.1;
+      })
+      .attr("width", (d:any) => d.width / 0.7)
+      .attr("height", (d:any) => {
+        if (d.height * 2.5 >= heightImg) {
+          return (d.height / 2.8) * this.verifyHeight(this.state.id, this.sliderValue).length * 0.9 + 5;
+        }
+        else return (d.height / 2.8) * this.verifyHeight(this.state.id, this.sliderValue).length * 0.9 + 10;
+      })
+      .attr("stroke", "white")
+      .attr("fill", "white")
+      .attr("position", "relative");
 
 
-      rect.append("rect")
-        .attr("x", (d: any) => d.x - (d.width / 2))
-        .attr("y", (d: any) => d.y - (d.height / 2))
-        .attr("width", (d: any) => d.width)
-        .attr("height", (d: any) => d.height)
-        .attr("stroke", (d: any) => "white")
-        .attr("fill", 'none');
-
-      rect.append("rect")
-        .attr("x", (d: any) => d.x - d.width / 1.5)
-        .attr("y", (d: any) => {
-          if (d.height * 2.5 >= heightImg) return d.y - d.height / 1.2;
-          else return d.y - d.height / 1.1;
-        })
-        .attr("width", (d: any) => d.width / 0.75)
-        .attr("height", (d: any) => {
-          if (d.height * 2.5 >= heightImg) return d.height / 3;
-          else return d.height / 2;
-        })
-        .attr("stroke", (d: any) => "white")
-        .attr("fill", "white");
+      // rect.append("text")
+      // .attr("x", (d:any) => d.x - d.width / 2 + 5) // adjust the x position to add padding
+      // .attr("y", (d:any) => {
+      //   if (d.height * 3 >= heightImg) return d.y -  (i -= 8) - d.height / 1.2 + 15;
+      //   else return d.y -  (i -= 8) - d.height / 1.1 + 15;
+      // }) // adjust the y position to add padding
+      // .attr("text-anchor", "start") // adjust the text alignment
+      // .attr("dominant-baseline", "hanging")
+      // .attr("fill", "black")
+      // .attr("font-weight", "bold")
+      // .attr("position", "absolute")
+      // .attr("font-size", "1.4rem")
+      // .selectAll("tspan")
+      // .data((d:any) => CATEGORIES[d.class].split('\n')) // assuming CATEGORIES[d.class] contains newline-separated information
+      // .enter()
+      // .append("tspan")
+      // // .attr("x", (d:any) => d.x - d.width / 2 + 5)
+      // .attr("dy", (d:any, i:any) => i === 0 ? 0 : "1.2em") // line spacing
+      // .text((d:any) => d);
 
       rect.append("text")
-        .attr("x", (d: any) => d.x * 1.1)
+        .attr("x", (d: any) => d.x - d.width/3)
         .attr("y", (d: any) => d.y - (d.height / 2) - 5 + (i -= 8))
-        .attr("text-anchor", "end")
-        .attr("dominant-baseline", "middle")
+        .attr("text-anchor", "start") // adjust the text alignment
+        .attr("dominant-baseline", "hanging")
         .attr("fill", "black")
         .attr("font-weight", "bold")
         .attr("font-size", "1.4rem")
@@ -398,10 +429,11 @@ export class AlphavisIdComponent {
         .attr("stroke-width", 0.5)
         .attr("font-size", "1.4rem")
         .text((d: any) => CATEGORIES[d.class]);
-
     }
   }
-
+  // verifyHeight(person:any, frame: any){ // verificar a quantidade de ações para aquele frame e id analisado
+  //   return this.dataSet.filter((data:any)=> data.person_id == person && data.frame_id == frame)
+  // }
   changeVisibility(): void {
 
     let result = this.heatmapInf.nativeElement
@@ -413,6 +445,7 @@ export class AlphavisIdComponent {
     else {
       result.setAttribute('style', 'visibility: hidden');
       this.sunnydisplay = !this.sunnydisplay;
+
     }
 
   }
@@ -427,10 +460,9 @@ export class AlphavisIdComponent {
 
     let rstClassQtd = rst.map((item: Data) => CATEGORIES[item.class]);
 
-    // console.log("map class rts walk:::\n", rstClassQtd.filter((item:string)=> item == "walk").length);
 
     let rstClass: any = [... new Set(rst.map((item: any) => item.class))];
-    var objectClass = { img: 0, categorie: "string", quantideCat: 0 }; // setando tipificação
+    var objectClass = { img: 0, categorie: "string", quantideCat: 0 };
 
     rstClass.forEach((classId: number) => {
       objectClass = {
