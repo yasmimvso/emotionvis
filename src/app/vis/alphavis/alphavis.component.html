@@ -1,13 +1,13 @@
 <div class="alphavis">
   <app-tamplate></app-tamplate>
   <div class="main">
-    <app-nav class="nave"></app-nav>
+    <app-nav class="nave blue-color-background"></app-nav>
     <div class="content">
       <h2 class="title-top">
         Alphavis
       </h2>
-      <div class="canvas-alphavis">
-        <div class="checkbox mat-elevation-z3">
+      <div class="canvas-alphavis gray-color-background">
+        <div class="checkbox mat-elevation-z6 gray-color-background">
           <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtrar dados por ação</h3>
           <ng-container class="filters" *ngFor="let trd of filter">
             <div class="checkbox-container">
@@ -57,15 +57,25 @@
             </button>
             <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
               [step]="stepValue" (change)="atualizarImagem()" />
+            <a style="padding: 2% 0% 2% 2%; cursor: pointer;" (click)="zoomin()">
+              <i class="material-icons v-middle">
+                zoom_in
+              </i>
+            </a>
+            <a style="padding: 2% 0% 2% 2%;  cursor: pointer;" (click)="zoomout()">
+              <i class="material-icons v-middle">
+                zoom_out
+              </i>
+            </a>
           </div>
         </div>
       </div>
-      <div class="date">
-        <div class="dataPlot  mat-elevation-z3" #dataPlot>
+      <div class="date gray-color-background">
+        <div class="dataPlot  mat-elevation-z6 gray-color-background" #dataPlot>
           <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Total de ações detectadas</h3>
           <div id="dataPlot"></div>
         </div>
-        <div class="lineCard mat-elevation-z3" class="plotLine-content" #chartLine>
+        <div  class="plotLine-content mat-elevation-z6 gray-color-background" #chartLine>
           <div style="display: inline-flex; justify-content: center;">
             <h3 style="color:red; font-weight: bold; margin-right: 0.5%;">Erros</h3>
             <h3> de detecção de ação por Frames</h3>

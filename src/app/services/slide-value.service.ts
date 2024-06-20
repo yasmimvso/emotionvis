@@ -17,7 +17,6 @@ export class SlideValueService {
   getSliderValue(): number {
 
     const storedValue = localStorage.getItem(this.localStorageKey);
-    console.log(storedValue);
     let result: any = [storedValue ? JSON.parse(storedValue) : 0 , "true"];
     return result;
   }

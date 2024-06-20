@@ -1,4 +1,4 @@
-import { Component,  ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component,  ElementRef, ViewChild} from '@angular/core';
 import { HeaderService } from '../../services/header.service'
 
 @Component({
@@ -6,7 +6,7 @@ import { HeaderService } from '../../services/header.service'
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
-export class NavComponent implements OnInit {
+export class NavComponent {
   @ViewChild('containerNav') containerNav!: ElementRef;
 
   displayNav: boolean = true;
@@ -25,11 +25,5 @@ export class NavComponent implements OnInit {
     });
 
   }
-  ngOnInit(): void {
-
-  }
-
- 
-
 
 }

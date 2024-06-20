@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class HeaderService {
 
   constructor() { }
-
+  private localStorageKey = 'invertColor';
   private displayNavSource = new BehaviorSubject<boolean>(true);
   displayNav$ = this.displayNavSource.asObservable();
 
@@ -16,4 +16,13 @@ export class HeaderService {
     this.displayNavSource.next(!currentDisplayNav);
   }
 
+  toggleInvertColor(value:string){
+    localStorage.setItem(this.localStorageKey, value);
+  }
+
+  getInvertColor():boolean{
+    const storedValue = localStorage.getItem(this.localStorageKey);
+    let result: boolean = storedValue == "false" ? false : true;
+    return result;
+  }
 }

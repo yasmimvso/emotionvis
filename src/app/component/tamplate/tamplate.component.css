@@ -12,7 +12,6 @@ img{
 }
 .menu{
   padding: 0 10%;
-  color: black;
 }
 .menu i{
   font-size: 90%;
@@ -22,4 +21,9 @@ img{
 }
 .menu::after{
   color: black;
+}
+
+.backgroundPage{
+  padding: 2% 0% 2% 2%;
+  cursor: pointer;
 }
