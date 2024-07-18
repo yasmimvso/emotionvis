@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener} from '@angular/core';
-import { FrameService } from '../../services/alphaframe.service'
-import { GroundingService } from '../../services/grounding.service'
-import { CATEGORIES  } from '../../shared/functions/alphavis.categories'
-import { iou } from '../../shared/functions/alphavis.iou'
-import {plotInfo} from '../../shared/functions/vis-data.infoPlot'
-import {infoCard} from '../../shared/functions/vis-data.infoPlot'
+import { FrameService } from '../../services/alphaframe.service';
+import { GroundingService } from '../../services/grounding.service';
+import { CATEGORIES  } from '../../shared/functions/alphavis.categories';
+import { iou } from '../../shared/functions/alphavis.iou';
+import {plotInfo} from '../../shared/functions/vis-data.infoPlot';
+import {infoCard} from '../../shared/functions/vis-data.infoPlot';
+import  {HeaderService} from '../../services/header.service';
 
 import { forkJoin } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -28,7 +29,7 @@ export class VisDataComponent implements OnInit{
   @ViewChild('img', { static: true }) private img!: ElementRef;
   @ViewChild('containerBar', {static: true}) private chartBar!: ElementRef;
 
-  constructor(private uploadRs: FrameService, private uploadGt: GroundingService) { }
+  constructor(private uploadRs: FrameService, private uploadGt: GroundingService, private headService : HeaderService) { }
 
 
   dadosRs: Data[] = []
@@ -143,6 +144,8 @@ export class VisDataComponent implements OnInit{
     width = this.chartBar.nativeElement.clientWidth - margin.left - margin.right,
     height =  this.chartBar.nativeElement.clientHeight - margin.top - margin.bottom;
 
+    let result = this.headService;
+
     let chartContainer = d3.select(id)
     chartContainer.selectAll('*').remove();
 
@@ -197,7 +200,14 @@ export class VisDataComponent implements OnInit{
       .attr("y", 0 - (margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "1.3rem")
-      .style("color", "rgb(103, 104, 104)")
+      // // .style("color", "rgb(103, 104, 104)")
+      // .attr("fill", ()=>{
+      //   return (function(result) {
+      //     let returned = result.getInvertColor();
+      //     console.log("Resultado de color: " + returned);
+      //     return returned ? "white" : "black";
+      //   })(result);
+      // })
       .text(title);
   }
   errorByFrames(dados:any){

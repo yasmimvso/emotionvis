@@ -2,7 +2,7 @@
 .canvas-alphavis, .date{
   display: flex;
   flex-direction: row;
-  width: 80%;
+  width: 77%;
   height: 47%;
   border-radius: 1rem;
   align-items: center;
@@ -188,4 +188,8 @@ transform-origin: 75px 75px;
 
 #chart-container{
   cursor: zoom-in;
+}
+
+.touch_app{
+  font-size: 1.7rem; color: black; margin-bottom: 1%;
 }

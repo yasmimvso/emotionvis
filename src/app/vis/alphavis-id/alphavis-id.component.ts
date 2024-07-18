@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { calcPoint } from '../../shared/functions/alphavis.points';
 import { CATEGORIES } from '../../shared/functions/alphavis.categories';
 import { Data, Interval } from '../../shared/functions/interface'
+import { HeaderService } from 'src/app/services/header.service';
 import * as d3 from 'd3';
 import { heatMap } from 'src/app/shared/functions/heatmap';
-import { random } from 'cypress/types/lodash';
+
 
 @Component({
   selector: 'app-alphavis-id',
@@ -51,7 +52,7 @@ export class AlphavisIdComponent {
   dadosHeatMap: any = [];
 
 
-  constructor(private router: Router, private location: Location) {
+  constructor(private router: Router, private location: Location, private headService : HeaderService) {
 
     location.getState();
 
@@ -476,12 +477,12 @@ export class AlphavisIdComponent {
   }
 
   public ChartLine() {
-    console.log("resultado interval charts:", this.dataSet);
+
     const margin = { top: 20, right: 10, bottom: 20, left: 100};
     const width = (this.barCharts.nativeElement.clientWidth - margin.left - margin.right) / 1.3;
     const height = (this.barCharts.nativeElement.clientHeight - margin.top - margin.bottom)/ 1.3;
 
-
+    let result = this.headService.getInvertColor();
     let chartContainer: any = d3.select("#chartLine")
     chartContainer.selectAll("*").remove();
 
@@ -525,26 +526,18 @@ export class AlphavisIdComponent {
     .style("border" , "2%")
     .style("font-size", "1.5rem");
 
-    // svg.append('text')
-    // // .attr('class', 'x-axis-label')
-    // .attr('text-anchor', 'middle')
-    // .attr('x', width / 2)
-    // .attr('y', height + margin.bottom + 5)
-    // .attr("font-size", "1.2rem")
-    // .attr("font-family", "Quicksand")
-    // .attr("color", "#686767")
-    // .text('Frames');
-
   // Add y-axis label
   svg.append('text')
-    // .attr('class', 'y-axis-label')
     .attr('text-anchor', 'middle')
     .attr('transform', 'rotate(-90)')
     .attr('x', -height / 2)
     .attr('y', -margin.left + 10)
     .attr("font-size", "1.2rem")
     .attr("font-family", "Quicksand")
-    .attr("color", "#686767")
+    .attr("fill", function(){
+      console.log("aqui aqui", result);
+      return result? "white" : "black";
+    })
     .text('Intervalos de predições');
 
     tooltip.selectAll("*").remove();

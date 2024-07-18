@@ -6,7 +6,7 @@
         <div class="container-chart-main mat-elevation-z3 gray-color-background">
           <div class="text-alert-container">
             <h2><em>Visualização de Dados Sumarizados</em></h2>
-            <p>Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
+            <p class="defaultColor">Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
           </div>
           <div class="charts-data chart-contorn ">
               <div class="img-plotBar chart-contorn mat-elevation-z3 blue-color-background">
@@ -34,7 +34,7 @@
                       <p style="color: #fff; opacity: 0.8; "><em>Quantidade de erros</em></p>
                     </div>
                   </div>
-                  <div class="board-frames-maxError">
+                  <div class="board-frames-maxError defaultColor">
                     <ng-container *ngFor="let trd of filter">
                       <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
                         <a (click)="changeImg(trd.frame)" class="descFrame-list"><p>{{trd.frame}}</p></a>
@@ -44,7 +44,7 @@
                   </div>
                  </div>
               </div>
-              <div class="pie-inf chart-contorn mat-elevation-z3">
+              <div class="pie-inf chart-contorn mat-elevation-z3 defaultColor">
                <div id="containerBar" class="container-bar mat-elevation-z6" #containerBar></div>
                <div id="containerPie" class="container-bar mat-elevation-z6" #containerPie></div>
               </div>
