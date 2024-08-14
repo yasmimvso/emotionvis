@@ -146,7 +146,20 @@ img{
   justify-content: center;
 }
 
+.icon{
+    font-size: 1.7rem;
+    color: #fff;
+ }
+ 
+
 .icon-click{
   cursor: default;
 }
 
+.label-error{
+  width: 50%; text-align: center;
+}
+
+.label-error p{
+  opacity: 0.8; 
+}

@@ -7,7 +7,7 @@
         Alphavis
       </h2>
       <div class="canvas-alphavis gray-color-background">
-        <div class="checkbox mat-elevation-z6 gray-color-background">
+        <div class="checkbox mat-elevation-z6 gray-color-background defaultColor">
           <h3 style="padding: 10px; border-bottom: 1px solid#a7a7a7;">Filtrar dados por ação</h3>
           <ng-container class="filters" *ngFor="let trd of filter">
             <div class="checkbox-container">
@@ -18,12 +18,12 @@
           </ng-container>
         </div>
         <div class="midia">
-          <div class="span-title">
+          <div class="span-title defaultColor">
 
             <div class="instruction-click">
               <a matTooltip="Os pontos são clicáveis" matTooltipClass="example-tooltip-uppercase"
                 style="cursor: default;">
-                <i class="material-icons" style="font-size: 1.7rem; color: black; margin-bottom: 1%;">touch_app</i>
+                <i class="touch_app material-icons">touch_app</i>
               </a>
               <a matTooltip="Os pontos são clicáveis" matTooltipClass="example-tooltip-uppercase"
                 style="cursor: default;">
@@ -48,7 +48,7 @@
           </div>
           <div class="board-view">
             <img class="img" [src]="imagemUrl" alt="imagem.jpg" #imgView>
-            <div #heatmap id="heatmap" class="heatmapImg"></div>
+            <!-- <div #heatmap id="heatmap" class="heatmapImg"></div> -->
             <div id="chart-container"></div>
           </div>
           <div class="slider-container">
@@ -57,7 +57,7 @@
             </button>
             <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
               [step]="stepValue" (change)="atualizarImagem()" />
-            <a style="padding: 2% 0% 2% 2%; cursor: pointer;" (click)="zoomin()">
+            <!-- <a style="padding: 2% 0% 2% 2%; cursor: pointer;" (click)="zoomin()">
               <i class="material-icons v-middle">
                 zoom_in
               </i>
@@ -66,11 +66,11 @@
               <i class="material-icons v-middle">
                 zoom_out
               </i>
-            </a>
+            </a> -->
           </div>
         </div>
       </div>
-      <div class="date gray-color-background">
+      <div class="date gray-color-background defaultColor">
         <div class="dataPlot  mat-elevation-z6 gray-color-background" #dataPlot>
           <h3 style="padding: 10px; border-bottom: 1px solid #a7a7a7;">Total de ações detectadas</h3>
           <div id="dataPlot"></div>

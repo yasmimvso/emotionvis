@@ -154,6 +154,10 @@ p {
   color: #3db5e7;
 }
 
+.defaultColor{
+  color: 'black';
+}
+
 
 .checkbox{
   display: flex;
