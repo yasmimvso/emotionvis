@@ -7,10 +7,13 @@ export interface Data{
   bb_y2: any;
   class: any;
   valid?: boolean;
+  class_gt?: any;
+  iou?: number;
   x?: any;
   y?: any;
   width?: any;
   height?: any;
+  accuracy?:number;
 }
 
 export interface Interval{

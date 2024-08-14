@@ -535,7 +535,6 @@ export class AlphavisIdComponent {
     .attr("font-size", "1.2rem")
     .attr("font-family", "Quicksand")
     .attr("fill", function(){
-      console.log("aqui aqui", result);
       return result? "white" : "black";
     })
     .text('Intervalos de predições');
@@ -552,7 +551,6 @@ export class AlphavisIdComponent {
       .attr('height', y.bandwidth())
       .attr('fill', (d:any) => d.color)
       .on("mouseover", (i:any, d:any) => {
-        console.log("aqui aqui");
         tooltip.transition()
           .duration(200)
           .style("visibility", "visible")

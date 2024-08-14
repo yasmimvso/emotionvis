@@ -185,10 +185,10 @@ transform-origin: 75px 75px;
   left: 0;
   opacity: 0.7;
 }
-
+/* 
 #chart-container{
   cursor: zoom-in;
-}
+} */
 
 .touch_app{
   font-size: 1.7rem; color: black; margin-bottom: 1%;

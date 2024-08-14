@@ -14,7 +14,7 @@ export class NavComponent {
   constructor(private navService: HeaderService, private renderer: Renderer2) {
 
     this.navService.displayNav$.subscribe(value => {
-      console.log("por aqui");
+      // console.log("por aqui");
       this.displayNav = value;
 
       if (this.containerNav) {
@@ -22,16 +22,16 @@ export class NavComponent {
         // const navElement = this.containerNav.nativeElement as HTMLElement;
 
         const navElement = document.querySelector('.container-nav') as HTMLElement;
-        console.log(navElement);
+        // console.log(navElement);
         if(navElement){
-          console.log("aqui a2u");
+          // console.log("aqui a2u");
           // navElement.style.opacity = this.displayNav ? '1' : '0';
           this.renderer.setStyle(navElement, 'opacity', this.displayNav ? '1' : '0');
-          console.log("bom dia");
+          // console.log("bom dia");
           if (result) {
             // navElement.style.backgroundColor = '#38444d';
             this.renderer.setStyle(navElement, 'backgroundColor', '#38444d');
-            console.log("debbug");
+            // console.log("debbug");
           }
           else  this.renderer.setStyle(navElement, 'backgroundColor', '#3db5e7');
 
@@ -43,7 +43,7 @@ export class NavComponent {
 
   }
   ngAfterViewInit() {
-    console.log("hello");
+    // console.log("hello");
     const result = this.navService.getInvertColor();
     let nav = document.querySelectorAll('.sidenav');
 

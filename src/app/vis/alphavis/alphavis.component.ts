@@ -233,6 +233,7 @@ export class AlphavisComponent implements OnInit {
 
     let Drs: Data[] = [];
     let slc = 0;
+    let selected: any;
 
     let chartContainer: any = d3.select("#chart-container");
     chartContainer.selectAll("*").remove();
@@ -242,7 +243,6 @@ export class AlphavisComponent implements OnInit {
     limpar.selectAll("*").remove();
 
 
-    let selected: any;
     selected = [... new Set(this.filter.map((item) => item.selected))];
 
     if (selected.indexOf(true) > 0) {
@@ -293,10 +293,10 @@ export class AlphavisComponent implements OnInit {
           else if (d.valid === true) return "green";
           else return "red";
         })
-        .text((d: any) => {
-          if (d.person_id === undefined) return 'Pessoa não identificada';
-          else return `Id: ${d.person_id ? d.person_id : "S/I"} | Ação: ${CATEGORIES[d.class]}`
-        })
+        // .text((d: any) => {
+        //   if (d.person_id === undefined) return 'Pessoa não identificada';
+        //   else return `Id: ${d.person_id ? d.person_id : "S/I"} | AçãoRs: ${CATEGORIES[d.class]} Ação GT: ${CATEGORIES[d.class]}`
+        // })
 
       var tooltip = d3.select("body")
         .append("div")
@@ -324,12 +324,23 @@ export class AlphavisComponent implements OnInit {
           hideTooltip();
         });
 
+      function allPreds(d:Data){
+        let categories : string[] = Drs.filter((item) => item.person_id == d.person_id).map((item)=> CATEGORIES[item.class])
+        return categories;
+      }
+
+      function allGroundTruth(d:Data){
+        let categories : string[] = Drs.filter((item) => item.person_id == d.person_id).map((item)=> CATEGORIES[item.class_gt])
+        return categories;
+      }
       function showTooltip(event: any, d: any) {
 
         let textInf: string;
+        const actionsRs = allPreds(d);
+        const actionsGt = allGroundTruth(d);
 
-        if (d.person_id === undefined) textInf = 'Pessoa não identificada';
-        else textInf = `Id: ${d.person_id ? d.person_id : "S/I"} | Ação: ${CATEGORIES[d.class]}`
+        if (d.person_id === undefined) textInf = `Pessoa não identificada | gt: ${CATEGORIES[d.class_gt]}`;
+        else textInf = `Id: ${d.person_id ? d.person_id : "S/I"} | pred: ${actionsRs.join(", ")} | gt: ${actionsGt.join(", ")} `
 
         tooltip.style("visibility", "visible")
           .style("opacity", 1)
@@ -611,20 +622,20 @@ export class AlphavisComponent implements OnInit {
   }
 
 
-  zoomin() {
-    let zoomImg = this.imgView.nativeElement;
-    let currWidth = zoomImg.clientWidth;
-    console.log("currente largura:", currWidth);
-    zoomImg.style.width = currWidth * 1.2 + "px";
-    zoomImg.style.zoom = "50%"
-  }
+  // zoomin() {
+  //   let zoomImg = this.imgView.nativeElement;
+  //   let currWidth = zoomImg.clientWidth;
+  //   // console.log("currente largura:", currWidth);
+  //   zoomImg.style.width = currWidth * 1.2 + "px";
+  //   zoomImg.style.zoom = "50%"
+  // }
 
-  zoomout() {
-    let zoomImg = <HTMLElement>document.getElementsByClassName("img")[0];
-    let currWidth = this.imgView.nativeElement.clientWidth;
-    if (parseFloat(currWidth) * 0.8 > this.BuffersizeImg) zoomImg.style.width = (parseFloat(currWidth) * 0.8).toString();
-    else zoomImg.style.width = this.BuffersizeImg + "px";
-  }
+  // zoomout() {
+  //   let zoomImg = <HTMLElement>document.getElementsByClassName("img")[0];
+  //   let currWidth = this.imgView.nativeElement.clientWidth;
+  //   if (parseFloat(currWidth) * 0.8 > this.BuffersizeImg) zoomImg.style.width = (parseFloat(currWidth) * 0.8).toString();
+  //   else zoomImg.style.width = this.BuffersizeImg + "px";
+  // }
 
   togglePlay() {
 

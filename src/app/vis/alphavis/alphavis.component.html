@@ -48,7 +48,7 @@
           </div>
           <div class="board-view">
             <img class="img" [src]="imagemUrl" alt="imagem.jpg" #imgView>
-            <div #heatmap id="heatmap" class="heatmapImg"></div>
+            <!-- <div #heatmap id="heatmap" class="heatmapImg"></div> -->
             <div id="chart-container"></div>
           </div>
           <div class="slider-container">
@@ -57,7 +57,7 @@
             </button>
             <input type="range" class="slider" [(ngModel)]="sliderValue" [min]="minValue" [max]="maxValue"
               [step]="stepValue" (change)="atualizarImagem()" />
-            <a style="padding: 2% 0% 2% 2%; cursor: pointer;" (click)="zoomin()">
+            <!-- <a style="padding: 2% 0% 2% 2%; cursor: pointer;" (click)="zoomin()">
               <i class="material-icons v-middle">
                 zoom_in
               </i>
@@ -66,7 +66,7 @@
               <i class="material-icons v-middle">
                 zoom_out
               </i>
-            </a>
+            </a> -->
           </div>
         </div>
       </div>

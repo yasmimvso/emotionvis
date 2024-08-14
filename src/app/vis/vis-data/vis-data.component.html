@@ -1,57 +1,56 @@
-
-  <app-tamplate></app-tamplate>
-  <div>
-    <div class="main">
-        <app-nav></app-nav>
-        <div class="container-chart-main mat-elevation-z3 gray-color-background">
-          <div class="text-alert-container">
-            <h2><em>Visualização de Dados Sumarizados</em></h2>
-            <p class="defaultColor">Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
+<app-tamplate></app-tamplate>
+<div>
+  <div class="main">
+    <app-nav></app-nav>
+    <div class="container-chart-main mat-elevation-z3 gray-color-background">
+      <div class="text-alert-container">
+        <h2><em>Visualização de Dados Sumarizados</em></h2>
+        <p class="defaultColor">Ambiente dedicado para sumarização de dados referentes à tecnologia {{tecnologia}}</p>
+      </div>
+      <div class="charts-data chart-contorn ">
+        <div class="img-plotBar chart-contorn mat-elevation-z3 blue-color-background">
+          <p style="color: #fff">{{topInfo}}</p>
+          <div class="view-img">
+            <img [src]="imagemUrl" alt="imagem.jpg" #img>
+            <div id="chart-container"></div>
           </div>
-          <div class="charts-data chart-contorn ">
-              <div class="img-plotBar chart-contorn mat-elevation-z3 blue-color-background">
-                <p style="color: #fff">Frames com maiores números de ações preditas com erros</p>
-                <div class="view-img">
-                  <img [src]="imagemUrl" alt="imagem.jpg" #img>
-                  <div id="chart-container"></div>
-                </div>
-                <mat-card class="mat-card">
-                  <div class="box-error">
-                    <h3>Erros:</h3>
-                  </div>
-                  <h3 class="list-error-actions" *ngIf="frame"><em>{{frame}}</em></h3>
-                </mat-card>
+          <mat-card class="mat-card">
+            <div class="box-error">
+              <h3>Erros:</h3>
+            </div>
+            <h3 class="list-error-actions" *ngIf="frame"><em>{{frame}}</em></h3>
+          </mat-card>
 
-                <div class="list-frame chart-contorn mat-elevation-z3">
-                  <div class="description-frames-erros mat-elevation-z2 blue-color-background">
-                    <div class="title-frame-icon">
-                      <a matTooltip="Os frames são clicáveis" matTooltipClass="example-tooltip-uppercase" class="icon-click">
-                        <i class="material-icons" style="font-size: 1.7rem; color: #fff">touch_app</i>
-                      </a>
-                      <p style="color: #fff"><em>Frames</em></p>
-                    </div>
-                    <div style="width: 50%; text-align: center;">
-                      <p style="color: #fff; opacity: 0.8; "><em>Quantidade de erros</em></p>
-                    </div>
-                  </div>
-                  <div class="board-frames-maxError defaultColor">
-                    <ng-container *ngFor="let trd of filter">
-                      <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
-                        <a (click)="changeImg(trd.frame)" class="descFrame-list"><p>{{trd.frame}}</p></a>
-                        <p>{{trd.length}}</p>
-                      </div>
-                   </ng-container>
-                  </div>
-                 </div>
+          <div class="list-frame chart-contorn mat-elevation-z3">
+            <div class="description-frames-erros mat-elevation-z2 blue-color-background">
+              <div class="title-frame-icon">
+                <a matTooltip="Os frames são clicáveis" matTooltipClass="example-tooltip-uppercase" class="icon-click">
+                  <i class="material-icons icon">touch_app</i>
+                </a>
+                <p><em>Frames</em></p>
               </div>
-              <div class="pie-inf chart-contorn mat-elevation-z3 defaultColor">
-               <div id="containerBar" class="container-bar mat-elevation-z6" #containerBar></div>
-               <div id="containerPie" class="container-bar mat-elevation-z6" #containerPie></div>
+              <div class="label-error">
+                <p><em>Quantidade de erros</em></p>
               </div>
+            </div>
+            <div class="board-frames-maxError defaultColor">
+              <ng-container *ngFor="let trd of filter">
+                <div class="action-frame" style="justify-content: space-around; margin-bottom: 1%;">
+                  <a (click)="changeImg(trd.frame)" class="descFrame-list">
+                    <p>{{trd.frame}}</p>
+                  </a>
+                  <p>{{trd.length}}</p>
+                </div>
+              </ng-container>
+            </div>
           </div>
         </div>
+        <div class="pie-inf chart-contorn mat-elevation-z3 defaultColor">
+          <div id="containerBar" class="container-bar mat-elevation-z6" #containerBar></div>
+          <div id="containerPie" class="container-bar mat-elevation-z6" #containerPie></div>
+        </div>
+      </div>
     </div>
   </div>
-  <app-footer></app-footer>
-
-
+</div>
+<app-footer></app-footer>

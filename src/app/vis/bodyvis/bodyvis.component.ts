@@ -11,6 +11,6 @@ export class BodyvisComponent implements OnInit {
   ngOnInit(): void {
     // this.homeService.toggleInvertColor("false");
     let result = this.homeService.getInvertColor();
-    console.log("resultado inverted color:", result);
+    // console.log("resultado inverted color:", result);
   }
 }
